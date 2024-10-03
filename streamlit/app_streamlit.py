@@ -12,6 +12,8 @@ if "logged_in" not in st.session_state:
     st.session_state.logged_in = False  
 if "show_login" not in st.session_state:
     st.session_state.show_login = False
+if "user" not in st.session_state:
+    st.session_state.user = False
 # if "redirect_message" not in st.session_state:
 #     st.session_state.redirect_message = ""
 
@@ -20,14 +22,20 @@ def show_main_app():
     st.set_page_config(page_title="DecisionFlow", layout="wide")
 
     with st.sidebar:
-        # if st.button("Login / Sign Up"):
-        #     st.session_state.show_login = True
-        #     # st.session_state.redirect_message = "Redirecting to login/sign-up page..."  # Set redirect message
-
-        # # Show the redirect message if it exists
-        # if st.session_state.redirect_message:
-        #     st.write(st.session_state.redirect_message)
-
+        if st.session_state.user:
+            st.markdown(
+                f"""
+                <style>
+                .custom-text {{
+                    font-size:30px;
+                    font-weight:bold;
+                    color:blue;
+                }}
+                </style>
+                <span class="custom-text">Hi, {st.session_state.user}</span>!
+                """,
+                unsafe_allow_html=True
+            )
         selected = option_menu(
             menu_title="DecisionFlow",
             options=["Home", "Chatbot", "Visualisation", "Login / Sign Up"],

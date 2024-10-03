@@ -91,6 +91,7 @@ def display_login_page():
             if login_username and login_password:
                 login_user(login_username, login_password)
                 if st.session_state.logged_in:
+                    st.session_state.user = login_username
                     return True  # Indicate successful login
             else:
                 st.error("Please enter both username and password.")
