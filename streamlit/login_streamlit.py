@@ -1,5 +1,6 @@
 # login_streamlit.py
 import streamlit as st
+from authentication import *
 
 def display_login_page():
     # Add custom CSS for styling
@@ -83,25 +84,25 @@ def display_login_page():
     # Display the correct form based on selection
     if st.session_state.form_type == "Login":
         st.header("Login Form")
-        login_email = st.text_input("Email Address", key="login_email")
+        login_username = st.text_input("Username", key="login_username")
         login_password = st.text_input("Password", type="password", key="login_password")
 
         if st.button("Login"):
-            if login_email == "test" and login_password == "test":
-                st.success("Logged in successfully!")
-                st.session_state.logged_in = True  # Update login status
-                return True  # Indicate successful login
+            if login_username and login_password:
+                login_user(login_username, login_password)
+                if st.session_state.logged_in:
+                    return True  # Indicate successful login
             else:
-                st.error("Invalid username or password!")
+                st.error("Please enter both username and password.")
                 return False  # Indicate unsuccessful login
     else:
         st.header("Signup Form")
-        signup_email = st.text_input("Email Address", key="signup_email")
+        signup_username = st.text_input("Username", key="signup_username")
         signup_password = st.text_input("Password", type="password", key="signup_password")
 
         if st.button("Signup"):
-            if signup_email and signup_password:
-                st.success(f"Signed up with {signup_email}")
+            if signup_username and signup_password:
+                register_user(signup_username, signup_password)
             else:
                 st.error("Please enter both email and password")
 
