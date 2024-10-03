@@ -15,26 +15,35 @@ recruitment_qns_list = [
 ]
 
 visualizations_list = [
-
+    "What is the distribution of skills that are highly sought by companies?",
+    "What are the top 3 aspects of employer branding that are most important to new graduates?",
+    "What are the entry level jobs for new graduates in AI?"
 ]
 
 
 # Function to display options
-def display_options(options_list):
+def display_options(options_list, add):
     st.write("Please select an option:")
     for idx, option in enumerate(options_list):
         # Use a unique key for each button by combining a string with the index
-        if st.button(option, key=f"option_{idx}"):
+        if st.button(option, key=f"option_{idx+add}"):
             st.session_state.selected_option = option
-            handle_option(st.session_state.selected_option)
+            handle_option(st.session_state.selected_option, idx+add)
 
-def handle_option(option):
-    st.session_state.messages.append({"User": "user", "message": option})
+
+def handle_option(option, selected_option_key):
+    st.session_state.messages.append({"user": "user", "message": option})
+    # delete_other_options(f"option_{selected_option_key}")
     if option == menu_list[0]:
-        display_options(recruitment_qns_list)
+        display_options(recruitment_qns_list,10)
+    elif option == menu_list[1]:
+        display_options(visualizations_list, 20)
+    # elif option == menu_list[2]:
+    #     chatbot_talk()
     elif option in recruitment_qns_list:
         handle_recruitment_option(st.session_state.selected_option)
-
+    elif option in visualizations_list:
+        handle_visualization_option(st.session_state.selected_option)
 
 # Function to handle the selected option
 def handle_recruitment_option(option):
@@ -62,6 +71,20 @@ def handle_recruitment_option(option):
     
     # Append the bot's response to chat history
     st.session_state.messages.append({"user": "bot", "message": bot_response})
+
+def handle_visualization_option(option):
+    # Append the selected option to chat history
+    st.session_state.messages.append({"user": "user", "message": option})
+
+    bot_response = "Feature currently not available"
+
+    st.session_state.messages.append({"user": "bot", "message": bot_response})
+
+#Function to delete other option buttons
+def delete_other_options(selected_option_key):
+    for key in list(st.session_state.keys()):
+        if key.startswith("option_") and key != selected_option_key:
+            del st.session_state[key]
 
 # Function to display messages
 def display_messages():

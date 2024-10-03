@@ -14,6 +14,7 @@ def chatbot():
     display_messages()
 
     # Display chatbot options (buttons will always remain visible)
-    display_options(menu_list)
+    display_options(menu_list,0)
+    
 
     # No need to reset selected_option to None here anymore
