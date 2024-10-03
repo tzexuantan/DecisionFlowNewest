@@ -1,19 +1,26 @@
 import streamlit as st
 import pandas as pd
+import os
 import matplotlib.pyplot as plt
 
 # Title of the app
 st.title("Distributions of Skills")
 
 # Define the path to your Excel file 
-file_path = r"C:\Users\elsia\Downloads\Final.xlsx"
+# file_path = "../Pre-Processing/Final.xlsx"
+
+# Get the directory of the current script
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Build the file path to Final.xlsx
+file_path = os.path.join(current_dir, "../Pre-Processing/Final.xlsx")
 
 # Read the Excel file
 df = pd.read_excel(file_path)
 
 # Display the dataframe
-st.write("Data from the Excel file:")
-st.dataframe(df)
+# st.write("Data from the Excel file:")
+# st.dataframe(df)
 
 # Show the data types of each column
 st.write("Data types:")

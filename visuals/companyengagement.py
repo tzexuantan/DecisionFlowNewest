@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
+import os
 import plotly.express as px
 
 # File path to your Excel file
-file_path = r"C:\Users\elsia\Downloads\Group Programming\company engagement.xlsx" 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+file_path = os.path.join(current_dir,"company engagement.xlsx")
 
 if file_path:
     df = pd.read_excel(file_path)
