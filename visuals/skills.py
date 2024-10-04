@@ -13,7 +13,7 @@ st.title("Distributions of Skills")
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Build the file path to Final.xlsx
-file_path = os.path.join(current_dir, "../Pre-Processing/Final.xlsx")
+file_path = os.path.join(current_dir, "../dataset/Final.xlsx")
 
 # Read the Excel file
 df = pd.read_excel(file_path)
