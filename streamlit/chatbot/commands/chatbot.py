@@ -15,11 +15,18 @@ def chatbot():
     if "option_clicked" not in st.session_state:
         st.session_state.option_clicked = False  # Initialize option clicked flag
 
-    # Display chat messages
-    display_messages()
+    if "selected_job_role" not in st.session_state:
+        st.session_state.selected_job_role = None  # Initialize selected job role
 
-    # Check if an option was clicked
-    if st.session_state.option_clicked:
+    if "waiting_for_job_role" not in st.session_state:
+        st.session_state.waiting_for_job_role = False  # Track whether we're waiting for job role selection
+
+    # Check if we are waiting for the user to select a job role
+    if st.session_state.waiting_for_job_role:
+        # If waiting for job role, display the job role options
+        display_options(job_roles_list, 100)
+    elif st.session_state.option_clicked:
+        # Handle the selected option (whether it's a job role or recruitment/visualization question)
         handle_option(st.session_state.selected_option)
     else:
         # Show the correct menu based on the user's last selection
@@ -30,3 +37,6 @@ def chatbot():
         else:
             # Show the main menu only if no submenu is active
             display_options(menu_list, 0)
+
+    # Display chat messages
+    display_messages()
