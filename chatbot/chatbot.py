@@ -24,6 +24,7 @@ Possible Questions:
 
 nlp = spacy.load("en_core_web_sm") # Load the spaCy language model
 
+#Obtain job roles and skills association
 def getJobRolesFromJSONFile():
     with open(ROLES_AND_SKILLS_FILE, 'r') as file:
         data = json.load(file)
@@ -55,7 +56,7 @@ def getSecondWordOfJobRoleGivenFirstWordAndJobRolesList(firstWord, jobRolesList)
             return words[1].lower()
     return 0
 
-
+#Obtain skills required for job role
 def extractKeywordsBasedOnUserInputAndCompareWithJobRolesList(userInput, jobRolesList):
     doc = nlp(userInput)
 

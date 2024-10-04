@@ -30,7 +30,7 @@ def display_options(options_list, add):
             st.rerun()  # Force rerun after option is clicked
 
     # Add a back button to return to the main menu
-    if st.button("Back to Main Menu"):
+    if st.session_state.current_menu != None and st.button("Back to Main Menu"):
         st.session_state.current_menu = None  # Reset the current menu
         st.rerun()  # Trigger a rerun to refresh the options
 
