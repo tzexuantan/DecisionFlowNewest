@@ -1,15 +1,24 @@
 import streamlit as st
+from visualizations import *
 import json
+import os
 
+
+# Ensure that set_page_config is at the top of the script
+st.set_page_config(page_title="DecisionFlow", layout="wide")
+
+#Recruitment-related question required variables
 # Load the roles and skills from JSON file
-ROLES_AND_SKILLS_FILE = "dataset/roles_and_associated_skills.json"
-with open(ROLES_AND_SKILLS_FILE, 'r') as file:
+current_dir = os.path.dirname(os.path.abspath(__file__))
+ROLES_AND_SKILLS_FILE_PATH = os.path.join(current_dir, "../../dataset/roles_and_associated_skills.json")
+with open(ROLES_AND_SKILLS_FILE_PATH, 'r') as file:
     roles_and_skills = json.load(file)
 
 job_roles_list = list(roles_and_skills['jobRoles'].keys())
 
-# Ensure that set_page_config is at the top of the script
-st.set_page_config(page_title="DecisionFlow", layout="wide")
+#Visualizations required variables
+indeed_df = initialize_indeed_dataset()
+bar_column_to_plot = "Skill"
 
 # Initialize session state variables
 if 'messages' not in st.session_state:
@@ -23,7 +32,7 @@ if 'option_clicked' not in st.session_state:
 if 'selected_job_role' not in st.session_state:
     st.session_state.selected_job_role = None
 if 'waiting_for_job_role' not in st.session_state:
-    st.session_state.waiting_for_job_role = False
+    st.session_state.waiting_for_job_role = True
 
 menu_list = [
     "Recruitment-related Questions",
@@ -92,28 +101,62 @@ def handle_option(option):
 
 # Function to handle recruitment options
 def handle_recruitment_option(option):
+    print(f"handle_recruitment_option called with option: {option}")
+
+    # Print the session state to understand what's going on
+    print("Session state before anything:", st.session_state)
+
     if option == recruitment_qns_list[0]:  # Recommend degrees or skills for a job position
-        if not st.session_state.waiting_for_job_role:
-            bot_response = "What jobs are you looking for?"
-            st.session_state.messages.append({"user": "bot", "message": bot_response})
+
+        # Initialize session state variables only if not already set
+        if st.session_state.waiting_for_job_role == False:
             st.session_state.waiting_for_job_role = True
+            print("waiting_for_job_role initialized as True")  # Debugging
 
-            # Handle job role selection
-            if st.session_state.waiting_for_job_role:
-                st.write("Select a job role:")
-                for idx, job_role in enumerate(job_roles_list):
-                    if st.button(job_role, key=f"job_role_{idx}"):
-                        st.session_state.selected_job_role = job_role
-                        st.session_state.waiting_for_job_role = False  # Stop showing job roles after selection
-                        break  # Exit loop to show skills # Show job roles until one is selected
+        if 'selected_job_role' not in st.session_state:
+            st.session_state.selected_job_role = None
+            print("selected_job_role initialized as None")  # Debugging
 
-                if st.session_state.selected_job_role:
-                    # Show skills associated with the selected job role
-                    selected_role = st.session_state.selected_job_role
-                    skills = roles_and_skills['jobRoles'][selected_role]
-                    skills_message = f"Skills required for {selected_role}:\n- " + '\n- '.join(skills)
-                    st.session_state.messages.append({"user": "bot", "message": skills_message})
-                    st.session_state.selected_job_role = None  # Reset job role selection
+        # Ensure dropdown shows up when waiting_for_job_role is True
+        if st.session_state.waiting_for_job_role:
+            # Display job role options as a dropdown
+            job_roles_list = ['Software Engineer', 'Data Scientist', 'DevOps Engineer', 'UX/UI Designer', 'Cybersecurity Analyst']
+            selected_job_role = st.selectbox("Please select a job role:", job_roles_list)
+            print(f"Dropdown rendered: {selected_job_role}")  # Debugging to check if dropdown is rendering
+            
+            # Confirm the selection using a button
+            if st.button("Confirm Selection"):
+                # Once the button is clicked, store the selected job role and stop showing the dropdown
+                st.session_state.selected_job_role = selected_job_role
+                st.session_state.waiting_for_job_role = False
+                print(f"Job role '{selected_job_role}' selected, setting waiting_for_job_role to False")  # Debugging
+                st.experimental_rerun()  # Force a rerun to refresh the UI after confirmation
+
+        # Debugging: See if we skip to this point unintentionally
+        print("Step 1 completed or skipped. Current session state:", st.session_state)
+
+        # Step 2: Show skills for the selected job role if one is selected
+        if st.session_state.selected_job_role is not None and not st.session_state.waiting_for_job_role:
+            selected_role = st.session_state.selected_job_role
+            print(f"Selected role is: {selected_role}")  # Debugging
+
+            # Fetch and display the skills for the selected job role
+            if selected_role in roles_and_skills['jobRoles']:
+                skills = roles_and_skills['jobRoles'][selected_role]
+                skills_message = f"Skills required for {selected_role}:\n- " + '\n- '.join(skills)
+
+                # Add the skills message to the bot's responses
+                st.session_state.messages.append({"user": "bot", "message": skills_message})
+
+                # Display the skills
+                st.write(skills_message)
+
+                # Optionally, reset the flow and allow the user to select another job role
+                if st.button("Select another job role"):
+                    st.session_state.selected_job_role = None
+                    st.session_state.waiting_for_job_role = True
+                    print("Resetting selected job role and waiting for job role")  # Debugging
+                    st.experimental_rerun()
 
     # Handle other recruitment options
     elif option == recruitment_qns_list[1]:
@@ -127,9 +170,15 @@ def handle_recruitment_option(option):
     else:
         bot_response = "I'm sorry, I didn't understand that option."
 
-    st.session_state.messages.append({"user": "bot", "message": bot_response})
+    # Add the bot response to session state messages (only if we handled other options)
+    if option != recruitment_qns_list[0]:
+        st.session_state.messages.append({"user": "bot", "message": bot_response})
 
+    # Debugging: Final state of session state
+    print("Session state after everything:", st.session_state)
 # Function to handle visualization options
+
+
 def handle_visualization_option(option):
     bot_response = "Feature currently not available."
     st.session_state.messages.append({"user": "bot", "message": bot_response})
@@ -159,7 +208,8 @@ def display_messages():
                 """,
                 unsafe_allow_html=True
             )
-
+      # Debugging
+    
 
 if not st.session_state.current_menu:
     display_options(menu_list, 0)

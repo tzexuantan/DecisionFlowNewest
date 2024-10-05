@@ -2,6 +2,7 @@ import streamlit as st
 import time
 from chatbot.chatbot_response import *
 from chatbot.commands.chatbot import chatbot
+from visualizations import visualizations
 from streamlit_option_menu import option_menu
 from login_streamlit import display_login_page  # Import the function
 from authentication import create_table
@@ -57,7 +58,7 @@ def show_main_app():
     elif selected == "Chatbot":
         chatbot()
     elif selected == "Visualisation":
-        st.write("Visualisation content goes here.")
+        visualizations()
     elif selected == "Login / Sign Up":
         if not st.session_state.logged_in:
             logged_in = display_login_page()

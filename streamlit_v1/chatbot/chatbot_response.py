@@ -1,9 +1,11 @@
 import streamlit as st
 import json
+import os
 
 # Load the roles and skills from JSON file
-ROLES_AND_SKILLS_FILE = "dataset/roles_and_associated_skills.json"
-with open(ROLES_AND_SKILLS_FILE, 'r') as file:
+current_dir = os.path.dirname(os.path.abspath(__file__))
+ROLES_AND_SKILLS_FILE_PATH = os.path.join(current_dir, "../../dataset/roles_and_associated_skills.json")
+with open(ROLES_AND_SKILLS_FILE_PATH, 'r') as file:
     roles_and_skills = json.load(file)
 
 job_roles_list = list(roles_and_skills['jobRoles'].keys())
