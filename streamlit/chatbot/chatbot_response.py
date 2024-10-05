@@ -85,8 +85,10 @@ def handle_option(option):
 
         if option == menu_list[0]:  # Recruitment-related Questions
             st.session_state.current_menu = 'recruitment'
+            st.session_state.messages.append({"user": "bot", "message":"What would you like to know about recruitment?"})
         elif option == menu_list[1]:  # Visualizations
             st.session_state.current_menu = 'visualization'
+            st.session_state.messages.append({"user": "bot", "message": "Here are some charts we have! Do you visit the visualizations tab for more info!"})
         elif option == menu_list[2]:  # Chat
             st.session_state.current_menu = 'chat'
             st.session_state.messages.append({"user": "bot", "message": "I'm here to chat!"})
@@ -242,8 +244,8 @@ def display_messages():
                 """,
                 unsafe_allow_html=True
             )
-      # Debugging
     
+
 
 if not st.session_state.current_menu:
     display_options(menu_list, 0)
@@ -263,4 +265,3 @@ if st.session_state.current_menu == 'chat':
             st.session_state.messages.append({"user": "bot", "message": "This is a response from the bot."})
             st.rerun()
 
-display_messages()
