@@ -221,30 +221,73 @@ def handle_visualization_option(option):
 
 # Function to display chat messages with bubbles
 def display_messages():
+    # Define styles for the scrollable container and message boxes
+    st.markdown(
+        """
+        <style>
+        .scrollable-container {
+            height: 400px; /* Set a fixed height */
+            overflow-y: auto; /* Enable vertical scrolling */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .message-bot {
+            text-align: left;
+            margin: 10px;
+        }
+        .message-user {
+            text-align: right;
+            margin: 10px;
+        }
+        .message-box {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 20px;
+        }
+        .message-box-bot {
+            background-color: #F0F0F0;
+            color: black;
+        }
+        .message-box-user {
+            background-color: #D4EDDA;
+            color: black;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Start the scrollable container and build the entire content as a single string
+    chat_html = '<div class="scrollable-container">'
+
+    # Loop through the messages stored in session state and build the HTML content
     for msg in st.session_state.messages:
         if msg['user'] == "user":
-            st.markdown(
-                f"""
-                <div style='text-align: right; margin: 10px;'>
-                    <div style='display: inline-block; background-color: #D4EDDA; color: black; padding: 10px 15px; border-radius: 20px;'>
+            chat_html += f"""
+                <div class="message-user">
+                    <div class="message-box message-box-user">
                         <b>You:</b> {msg['message']}
                     </div>
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
+            """
         else:
-            st.markdown(
-                f"""
-                <div style='text-align: left; margin: 10px;'>
-                    <div style='display: inline-block; background-color: #F0F0F0; color: black; padding: 10px 15px; border-radius: 20px;'>
+            print("Bot message", st.session_state)
+            chat_html += f"""
+                <div class="message-bot">
+                    <div class="message-box message-box-bot">
                         <b>Bot:</b> {msg['message']}
                     </div>
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
-    
+            """
+
+    # Close the scrollable container div
+    chat_html += '</div>'
+
+    # Render the entire chat HTML in one go
+    st.markdown(chat_html, unsafe_allow_html=True)
+
 
 
 if not st.session_state.current_menu:
