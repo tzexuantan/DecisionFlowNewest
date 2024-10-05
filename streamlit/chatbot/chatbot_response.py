@@ -180,8 +180,42 @@ def handle_recruitment_option(option):
 
 
 def handle_visualization_option(option):
-    bot_response = "Feature currently not available."
-    st.session_state.messages.append({"user": "bot", "message": bot_response})
+    bot_response = "Please visit Visualizations for more customization!"
+
+    if option == visualizations_list[0]:
+        if bar_column_to_plot in indeed_df.columns:
+            category_counts = indeed_df[bar_column_to_plot].value_counts()
+
+            if not category_counts.empty:
+                # Try to generate the bar chart as a matplotlib figure
+                try:
+                    fig, ax = plt.subplots()
+                    category_counts.plot(kind='bar', ax=ax, color='skyblue')
+                    ax.set_title(f'Distribution of Skills ({bar_column_to_plot})')
+                    ax.set_xlabel(bar_column_to_plot)
+                    ax.set_ylabel('Frequency')
+
+                    st.session_state['chart_fig'] = fig  # Store the figure in session_state
+                    
+                    # Attach the chart to the bot's response and store in session state
+                    st.session_state.messages.append({"user": "bot", "message": bot_response})
+                    print("Chart figure successfully saved to session state.")  # Debugging
+                    # Always check and display the chart using st.pyplot if it exists in session state
+                    if 'chart_fig' in st.session_state:
+                        st.pyplot(st.session_state['chart_fig'])  # Display the chart using st.pyplot
+                        print("Chart displayed using st.pyplot.")
+
+                except Exception as e:
+                    st.error(f"An error occurred while generating the chart: {e}")
+                    print(f"Error: {e}")  # Debugging
+            else:
+                st.warning("No data available to display the chart.")
+        else:
+            st.error(f"Column '{bar_column_to_plot}' not found.")
+    else:
+        st.session_state.messages.append({"user": "bot", "message": bot_response})
+
+    print(st.session_state)
 
 # Function to display chat messages with bubbles
 def display_messages():
