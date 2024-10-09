@@ -1,4 +1,6 @@
 import streamlit as st
+st.set_page_config(page_title="DecisionFlow", layout="wide")
+
 import time
 from chatbot.chatbot_response import *
 from chatbot.commands.chatbot import chatbot
@@ -7,21 +9,19 @@ from streamlit_option_menu import option_menu
 from login_streamlit import display_login_page  # Import the function
 from authentication import create_table
 
+# All other functions and setup code follow after the set_page_config call
+
 create_table()
-# Initialize session state
+# Initialize session state...
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False  
 if "show_login" not in st.session_state:
     st.session_state.show_login = False
 if "user" not in st.session_state:
     st.session_state.user = False
-# if "redirect_message" not in st.session_state:
-#     st.session_state.redirect_message = ""
 
 # Main app page
 def show_main_app():
-    st.set_page_config(page_title="DecisionFlow", layout="wide")
-
     with st.sidebar:
         if st.session_state.user:
             st.markdown(

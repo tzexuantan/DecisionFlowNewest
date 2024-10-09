@@ -5,7 +5,7 @@ import os
 
 
 # Ensure that set_page_config is at the top of the script
-st.set_page_config(page_title="DecisionFlow", layout="wide")
+#t.set_page_config(page_title="DecisionFlow", layout="wide")
 
 #Recruitment-related question required variables
 # Load the roles and skills from JSON file
@@ -222,7 +222,7 @@ def handle_visualization_option(option):
 # Function to display chat messages with bubbles
 def display_messages():
     # Define styles for the scrollable container and message boxes
-    st.markdown(
+    st.html(
         """
         <style>
         .scrollable-container {
@@ -256,7 +256,7 @@ def display_messages():
         }
         </style>
         """,
-        unsafe_allow_html=True
+        #unsafe_allow_html=True
     )
 
     # Start the scrollable container and build the entire content as a single string
@@ -283,10 +283,10 @@ def display_messages():
             """
 
     # Close the scrollable container div
-    chat_html += '</div>'
+    #chat_html += '</div>'
 
     # Render the entire chat HTML in one go
-    st.markdown(chat_html, unsafe_allow_html=True)
+    st.html(chat_html)
 
 
 
