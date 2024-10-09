@@ -42,7 +42,7 @@ def add_title(fig, title):
 fig = create_radar_chart(categories, values)
 
 # Add title to the chart
-fig = add_title(fig, "Company Engagement Radar Chart")
+fig = add_title(fig, "Employer Branding Radar Chart")
 
 # Display chart
 st.plotly_chart(fig)
