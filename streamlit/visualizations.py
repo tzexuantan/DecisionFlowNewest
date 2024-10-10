@@ -22,7 +22,31 @@ def initialize_engagement_dataset():
     engagement_df = pd.read_excel(company_engagement_file_path)
     
     return engagement_df
-    
+
+def initialize_ITJobs_dataset():
+    # Get the directory of the current script
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Build the file path to Final.xlsx
+    file_path = os.path.join(current_dir, "../Pre-Processing/IT Jobs.xlsx")
+    ITJobs_df = pd.read_excel(file_path)
+    return ITJobs_df
+
+def initialize_itjob_headerfinal_dataset(): 
+    # Get the directory of the current script
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Build the file path to Final.xlsx
+    file_path = os.path.join(current_dir, "../Pre-Processing/itjob_headerfinal.xlsx")
+    itjob_headerfinal_df = pd.read_excel(file_path)
+    return itjob_headerfinal_df
+
+def initialize_companyengagement_dataset():
+    # Get the directory of the current script
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Build the file path to Final.xlsx
+    file_path = os.path.join(current_dir, "../Pre-Processing/company engagement.xlsx")
+    companyengagement_df = pd.read_excel(file_path)
+    return companyengagement_df
+
 def plot_bar_graph(data, x_col):
     plt.figure(figsize=(10, 5))
     plt.xlabel(x_col)
@@ -30,6 +54,20 @@ def plot_bar_graph(data, x_col):
     plt.title(f'Distribution of Skills in {x_col}')
     
     data.plot(kind='bar', color='skyblue')
+
+def plot_pie_chart(data, column):
+    plt.figure(figsize=(8,8))
+    plt.pie(values=column, names=data)
+    plt.title('IT Entry Level Jobs')
+    plt.axis('equal')
+    plt.plot()
+
+def plot_pie_chart(data, column):
+    plt.figure(figsize=(8,8))
+    plt.pie(values=column, names=data)
+    plt.title('Education for IT Jobs')
+    plt.axis('equal')
+    plt.plot()
 
 #Function to display visualzations tab
 def visualizations():
@@ -87,6 +125,76 @@ def visualizations():
             else:
                 st.warning("Please select at least one skill to visualize.")
 
+def visualisations():
+    #Initialize Dataset
+    ITJobs_df = initialize_ITJobs_dataset()
+
+    category_column = 'job_title' 
+    sizes = ITJobs_df[category_column].value_counts()  # Counts the occurrences of each category
+    job = sizes.index  # The unique category 
+    sizes = sizes.values  # The corresponding sizes
+
+    # Create the pie chart
+    fig = px.pie(values=sizes, names=job, title="IT Entry Level Jobs")
+
+    # Display pie chart 
+    st.plotly_chart(fig)
+
+def visualisations():
+    #Initialize Dataset
+    itjob_df = initialize_itjob_headerfinal_dataset()
+
+    category_column = 'education_level' 
+    sizes = itjob_df[category_column].value_counts()  # Counts the occurrences of each category
+    labels = sizes.index  # The unique category labels
+    sizes = sizes.values  # The corresponding sizes
+
+    # Create the pie chart
+    fig = px.pie(values=sizes, names=labels, title="Education for IT Jobs")
+
+    # Display pie chart 
+    st.plotly_chart(fig)
+
+def visualisations():
+    #Initialize Dataset
+    companyengagement_df = initialize_companyengagement_dataset()
+
+    # Prepare data for radar chart
+    categories = list(companyengagement_df.columns)
+    values = companyengagement_df.mean().tolist()
+
+    # Print categories and values to check them
+    st.write("Categories:", categories)
+    st.write("Values:", values)
+
+    # Function to create radar chart
+    def create_radar_chart(categories, values):
+        fig = px.line_polar(r=values, theta=categories, line_close=True)
+        fig.update_traces(fill='toself')
+        return fig
+
+    # Function to update chart layout with title
+    def add_title(fig, title):
+        fig.update_layout(
+            title=title,
+            polar=dict(
+                radialaxis=dict(
+                    visible=True,
+                    range=[0, 5]
+                )
+            ),
+            showlegend=False
+        )
+        return fig
+
+    # Create radar chart
+    fig = create_radar_chart(categories, values)
+
+    # Add title to the chart
+    fig = add_title(fig, "Employer Branding Radar Chart")
+
+    # Display chart
+    st.plotly_chart(fig)
 
 
 # ================== Radar Chart Code ==================
@@ -128,3 +236,7 @@ def visualizations():
 
 # # Display chart
 # st.plotly_chart(fig)
+
+
+
+
