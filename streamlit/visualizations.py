@@ -63,6 +63,8 @@ def plot_bar_graph(data, company_x_col, company_y_col, title):
     plt.title(title)
     
     data.plot(kind='bar', x=x_col, y=y_col, color='skyblue')
+    plt.tight_layout()  
+    st.pyplot(plt)      
 
 def plot_pie_chart(size, label, title):
     plt.figure(figsize=(8,8))
@@ -239,11 +241,10 @@ if indeed_df[column_to_plot3].dtype == 'object':
         if selected_companies:
             filtered_data = indeed_df[indeed_df[column_to_plot3].isin(selected_companies)]
             filtered_counts = filtered_data[column_to_plot3].value_counts().reset_index()
-            filtered_counts.columns = [company_x_col, 'Count']
+            filtered_counts.columns = [company_x_col, company_y_col]  # Ensure the columns match correctly
 
             # Plot the bar graph for selected companies
             plot_bar_graph(filtered_counts, company_x_col, company_y_col, 'Companies that are hiring the IT roles')
-
 
     #Initialize Dataset
     itjob_salary_df = initialize_salary_dataset
