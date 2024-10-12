@@ -307,8 +307,8 @@ def visualizations():
         itjob_salary_df[column2] = pd.to_numeric(itjob_salary_df[column2], errors='coerce')
 
         # Handle missing values
-        itjob_salary_df[column1].fillna('', inplace=True)
-        itjob_salary_df[column2].fillna(0, inplace=True)
+        itjob_salary_df[column1] = itjob_salary_df[column1].fillna('')
+        itjob_salary_df[column2] = itjob_salary_df[column2].fillna(0)
 
         # Add number inputs for filtering salary range
         min_salary = itjob_salary_df[column2].min()
