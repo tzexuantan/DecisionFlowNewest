@@ -35,8 +35,12 @@ def initialize_salary_dataset():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # File path to the dataset
     file_path = os.path.join(current_dir, "../dataset/Salary_Data_Based_country_and_race.csv")
-    itjob_salary_df = pd.read_excel(file_path)
-    return itjob_salary_df
+    try:
+        itjob_salary_df = pd.read_excel(file_path)
+        return itjob_salary_df
+    except Exception as e:
+        st.error(f"Error reading the Excel file: {e}")
+        return None
 
 def initialize_skillset_dataset():
     # Get the directory of the current script
@@ -284,7 +288,14 @@ if indeed_df[column_to_plot3].dtype == 'object':
 
     # Further filter the DataFrame based on selected job titles
     filtered_df4 = filtered_df4[filtered_df4[column1].isin(selected_job_titles)]
+    # Display the filtered data (optional)
+    st.write(filtered_df4)
 
+    # Ensure that the import of the chatbot module is correctly done
+    try:
+        from chatbot.commands.chatbot import chatbot
+    except ImportError as e:
+        st.error(f"Error importing the chatbot module: {e}")
 
     itjob_skillset_df = initialize_skillset_dataset
 
