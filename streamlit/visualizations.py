@@ -18,7 +18,7 @@ def initialize_ITJobs_dataset():
     # Get the directory of the current script
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # Build the file path to Final.xlsx
-    file_path = os.path.join(current_dir, "../dataset/IT Jobs.xlsx")
+    file_path = os.path.join(current_dir, "../Pre-Processing/IT Jobs.xlsx")
     ITJobs_df = pd.read_excel(file_path)
     return ITJobs_df
 
@@ -26,7 +26,7 @@ def initialize_itjob_headerfinal_dataset():
     # Get the directory of the current script
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # Build the file path to Final.xlsx
-    file_path = os.path.join(current_dir, "../dataset/itjob_headerfinal.xlsx")
+    file_path = os.path.join(current_dir, "../Pre-Processing/itjob_headerfinal.xlsx")
     itjob_headerfinal_df = pd.read_excel(file_path)
     return itjob_headerfinal_df
 
@@ -95,71 +95,87 @@ def plot_line_chart(data, title):
         st.pyplot(plt)
 
 def visualizations():
-    # Initialize dataset
+   # Initialize dataset
     indeed_df = initialize_indeed_dataset()
 
-    # Bar Graph
+    # Title of the app
     st.title("Distributions of Skills")
 
-    #Column to plot
+    # Column to plot
     column_to_plot4 = "Skill"
-    skill_y_col = "No. of Position Require These Skills"
+    skill_y_col = "No. of Positions Requiring These Skills"
     skill_x_col = "Skills"
     job_title_column = "Job Title"
 
     # Check if columns exist
     if column_to_plot4 not in indeed_df.columns:
-        st.error(f"Column '{column_to_plot4}' not found in the Excel file.")
-        return
-
-    if job_title_column not in indeed_df.columns:
-        st.error(f"Column '{job_title_column}' not found in the Excel file.")
-        return
-
-    # Predefined keywords to filter job titles
-    predefined_keywords = ["Scientist", "IT", "Analyst", "DevOps", "Developer", "Computer Science", "Technology"]
-
-    # Multi-select for job title filtering
-    selected_keywords = st.multiselect(
-        'Select job title keywords to filter:',
-        options=predefined_keywords,
-        default=predefined_keywords  # Default to show all
-    )
-
-    # Create a regex pattern to include any job title containing the selected keywords
-    pattern = '|'.join(selected_keywords)
-
-    # Filter the DataFrame based on selected job titles
-    filtered_df = indeed_df[
-        (indeed_df[job_title_column].str.contains(pattern, case=False, na=False))
-    ]
-
-    # Count occurrences of each skill after filtering by job titles
-    if column_to_plot4 in filtered_df.columns and filtered_df[column_to_plot4].dtype == 'object':
-        category_counts = filtered_df[column_to_plot4].value_counts()
-
-        if not category_counts.empty:
-            # Multi-select filter for sub-skills
-            selected_skills = st.multiselect(
-                'Select specific skills to visualize',
-                options=category_counts.index.tolist(),
-                default=category_counts.index.tolist()  # Default to show all skills
-            )
-
-            # Create a filtered data series based on selected skills
-            filtered_counts = category_counts[selected_skills]
-
-            # Create a bar chart for the filtered sub-skills
-            if not filtered_counts.empty:
-                # Create a bar chart
-                st.bar_chart(filtered_counts)
-
-            else:
-                st.warning("No data available for the selected skills.")
-        else:
-            st.warning("No skills found in the filtered job titles.")
+        st.error(f"Column '{column_to_plot4}' not found in the dataset.")
     else:
-        st.warning("No skills found in the dataset or the selected job titles.")
+        if job_title_column not in indeed_df.columns:
+            st.error(f"Column '{job_title_column}' not found in the dataset.")
+        else:
+            # Predefined keywords to filter job titles
+            predefined_keywords = ["Scientist", "IT", "Analyst", "DevOps", "Developer", "Computer Science", "Technology"]
+
+        # Multi-select for job title filtering
+        selected_keywords = st.multiselect(
+            'Select job title keywords to filter:',
+            options=predefined_keywords,
+            default=predefined_keywords  # Default to show all
+        )
+
+        # Create a regex pattern to include any job title containing the selected keywords
+        pattern = '|'.join(selected_keywords)
+
+        # Filter the DataFrame based on selected job titles
+        filtered_df = indeed_df[
+            (indeed_df[job_title_column].str.contains(pattern, case=False, na=False))
+        ]
+
+        # Count occurrences of each skill after filtering by job titles
+        if column_to_plot4 in filtered_df.columns and filtered_df[column_to_plot4].dtype == 'object':
+            category_counts = filtered_df[column_to_plot4].value_counts()
+
+            if not category_counts.empty:
+                # Multi-select filter for sub-skills
+                selected_skills = st.multiselect(
+                    'Select specific skills to visualize:',
+                    options=category_counts.index.tolist(),
+                    default=category_counts.index.tolist()  # Default to show all skills
+                )
+
+                # Create a filtered data series based on selected skills
+                filtered_counts = category_counts[selected_skills]
+
+                # Display Analysis
+                st.write("## Analysis")
+                st.write("""
+                ### 💪 Distribution of Skills: Visual Description 📊
+                **Top IT skills needed for company positions:**
+                - **Web Development (WebD)**, **Coding**, and **DevOps** are among the most in-demand technical skills.
+                - Soft skills like **communication**, **teamwork**, and **problem-solving** are crucial across industries.
+
+                **Importance of These Skills ✅:**
+                - **Web Development (WebD)** ensures a functional, user-friendly online presence, essential for customer engagement and e-commerce.
+                - **Coding** serves as the foundation for software development, enabling IT professionals to create, test, and maintain applications while automating processes for efficiency.
+                - **DevOps** facilitates efficient software delivery, promoting collaboration between development and operations teams for faster, more reliable updates and scalable solutions.
+                - **Soft skills** like communication, teamwork, and problem-solving enhance collaboration and productivity in any workplace.
+
+                **Unlock your potential by mastering these skills!** 💼
+                - These are the building blocks for success in today’s job market.
+                - Stay focused—your dream job is within reach! 🙌
+                """)
+
+                # Create a bar chart for the filtered sub-skills
+                if not filtered_counts.empty:
+                    st.bar_chart(filtered_counts)
+                else:
+                    st.warning("No data available for the selected skills.")
+            else:
+                st.warning("No skills found in the filtered job titles.")
+        else:
+            st.warning("No skills found in the dataset or the selected job titles.")
+
 
     #Initialize Dataset
     ITJobs_df = initialize_ITJobs_dataset()
@@ -171,6 +187,30 @@ def visualizations():
 
     # Create the pie chart
     fig = px.pie(values=sizes, names=job, title="IT Entry Level Jobs")
+
+    st.title("📈 Entry Level IT Jobs")
+
+    # Combined analysis using st.write
+    st.write("""
+            ## 📊 Visual Description
+            - The most popular entry-level IT job for tech freshers is **Data Analyst**, accounting for **76.1%** of applications.
+            - The least popular positions include **Data Reporting Analyst**, **Data Quality Analyst**, and **BI Analyst**, each at **0.718%**.
+
+            ## 🔍 Analysis of Key Insights
+            - **Data Analyst**: Focuses on developing foundational skills in data manipulation, analysis, and reporting, helping businesses gain insights from data.
+            - **Business Intelligence (BI) Analyst**: Gathers and manages data using SQL, ensures data quality through cleansing techniques, and applies analytics to identify trends.
+            - **Research Analyst**: Collects data from various sources, uses statistical tools like Excel, R, or Python for analysis, and creates detailed reports summarizing findings.
+            - **Data Management Analyst**: Gathers and cleans data from various sources, uses database management systems like SQL to store and manipulate data, and monitors data quality with governance practices.
+            - **Data Operations Analyst**: Manages data transfers, implements quality control measures to ensure data accuracy, and analyzes operations using tools like SQL and Excel.
+            - **Business Intelligence**: Gathers, prepares, and analyzes data to identify trends, and creates interactive dashboards and reports using BI tools.
+            - **Data Reporting Analyst**: Gathers and prepares data, cleans and manipulates it, and creates comprehensive reports tailored to stakeholder needs.
+            - **Data Quality Analyst**: Assesses data quality to identify inaccuracies, implements processes for data cleaning and validation, and develops metrics for quality monitoring.
+            - **BI Analyst**: Prepares and cleans data, analyzes it using SQL and Excel, and creates interactive dashboards and reports.
+
+            ---
+
+            As you embark on your journey in the tech industry, remember that **every challenge is an opportunity to learn and grow**. 🌱 Starting with an entry-level job will serve as a stepping stone to greater success. **Good luck in your endeavors!** 🎉✨
+            """)
 
     # Display pie chart 
     st.plotly_chart(fig)
@@ -185,6 +225,25 @@ def visualizations():
 
     # Create the pie chart
     fig = px.pie(values=sizes, names=labels, title="Education for IT Jobs")
+
+    st.title("🎓 Education for IT Jobs in Singapore")
+    # Analysis
+    st.write("""
+            ## 📊 Visual Description
+            - The most required education for IT jobs is a **Bachelor's Degree**, accounting for **65.7%** of roles.
+            - **Diploma holders** also make up a significant portion, with **22%** of IT job positions.
+            - **Certificates** contribute a minimal **0.0343%**, indicating a much lower acceptance rate for IT-related certifications.
+
+            ## 💡 Importance of Education in IT Jobs
+            - IT is a highly competitive field, and many companies **prefer candidates with Bachelor's Degrees**.
+             - **Degree programs** provide a comprehensive skill set and foster critical thinking and problem-solving abilities, which are crucial in IT roles.
+            - **Diplomas** focus on specific skills, but they may not cover the broad knowledge required for career advancement in many IT roles.
+            - **Certifications**, while helpful for learning specific technologies, may leave gaps in broader IT concepts, limiting long-term career growth.
+
+            ---
+
+            Pursuing a **Bachelor's Degree** can unlock new opportunities in IT, but remember, your **Diploma** and **Certifications** are valuable too. Each step builds your skill set and prepares you for success in the IT industry. 🌟
+            """)
 
     # Display pie chart 
     st.plotly_chart(fig)
@@ -206,7 +265,7 @@ def visualizations():
 
         # Display the top 3 companies hiring the most IT roles for the entire dataset
         top3_companies = category_counts3.nlargest(3)
-        st.write("**Top 3 companies that are hiring the most IT roles:**")
+        st.write("Top 3 companies that are hiring the most IT roles:")
         for company, count in top3_companies.items():
             st.write(f"{company}: {count} roles")
 
@@ -216,8 +275,8 @@ def visualizations():
         lowest_company = category_counts3.idxmin()
         lowest_count = category_counts3.min()
 
-        st.write(f"**Company with the highest number of roles:** {highest_company} ({highest_count} roles)")
-        st.write(f"**Company with the lowest number of roles:** {lowest_company} ({lowest_count} role)")
+        st.write(f"Company with the highest number of roles: {highest_company} ({highest_count} roles)")
+        st.write(f"Company with the lowest number of roles: {lowest_company} ({lowest_count} role)")
 
         # Check if category_counts is not empty
         if not category_counts3.empty:
@@ -225,7 +284,7 @@ def visualizations():
             selected_companies = st.multiselect(
                 'Select companies to visualize',
                 options=category_counts3.index.tolist(),  # Provide the list of options
-                default=[]  # Default to show none
+                default=category_counts.index.tolist() # Default to show none
             )
 
             # Filter the data based on selected companies
@@ -237,81 +296,77 @@ def visualizations():
                 # Plot the bar graph for selected companies
                 plot_bar_graph(filtered_counts, company_x_col, company_y_col, 'Companies that are hiring the IT roles')
 
-    # Assume 'initialize_salary_dataset' is a function that loads the dataset
-    itjob_salary_df = initialize_salary_dataset()
+        # Assume 'initialize_salary_dataset' is a function that loads the dataset
+        itjob_salary_df = initialize_salary_dataset()
 
-    st.title("Salary ranges for IT jobs")
-    column1 = 'Job Title'
-    column2 = 'Salary'
+        st.title("Salary ranges for IT jobs")
+        column1 = 'Job Title'
+        column2 = 'Salary'
 
-    # Convert Salary column to numeric
-    itjob_salary_df[column2] = pd.to_numeric(itjob_salary_df[column2], errors='coerce')
+        # Convert Salary column to numeric
+        itjob_salary_df[column2] = pd.to_numeric(itjob_salary_df[column2], errors='coerce')
 
-    # Handle missing values
-    itjob_salary_df[column1].fillna('', inplace=True)
-    itjob_salary_df[column2].fillna(0, inplace=True)
+        # Handle missing values
+        itjob_salary_df[column1].fillna('', inplace=True)
+        itjob_salary_df[column2].fillna(0, inplace=True)
 
-    # Add number inputs for filtering salary range
-    min_salary = itjob_salary_df[column2].min()
-    max_salary = itjob_salary_df[column2].max()
-    min_value = st.number_input('Min Salary', min_value=min_salary, max_value=max_salary, value=min_salary)
-    max_value = st.number_input('Max Salary', min_value=min_salary, max_value=max_salary, value=max_salary)
+        # Add number inputs for filtering salary range
+        min_salary = itjob_salary_df[column2].min()
+        max_salary = itjob_salary_df[column2].max()
+        min_value = st.number_input('Min Salary', min_value=min_salary, max_value=max_salary, value=min_salary)
+        max_value = st.number_input('Max Salary', min_value=min_salary, max_value=max_salary, value=max_salary)
 
-    # Filter the DataFrame based on the salary range
-    filtered_df4 = itjob_salary_df[(itjob_salary_df[column2] >= min_value) & (itjob_salary_df[column2] <= max_value)]
+        # Filter the DataFrame based on the salary range
+        filtered_df4 = itjob_salary_df[(itjob_salary_df[column2] >= min_value) & (itjob_salary_df[column2] <= max_value)]
 
-    # Update job titles based on the filtered DataFrame
-    job_titles = filtered_df4[column1].unique()
+        # Update job titles based on the filtered DataFrame
+        job_titles = filtered_df4[column1].unique()
 
-    # Allow users to select job titles, defaulting to none
-    selected_job_titles = st.multiselect('Select Job Titles', job_titles, default=[])
-
-    # Further filter the DataFrame based on selected job titles
-    filtered_df4 = filtered_df4[filtered_df4[column1].isin(selected_job_titles)]
-
-    if selected_job_titles:
+        # Allow users to select job titles, defaulting to all options if none are selected
+        selected_job_titles = st.multiselect('Select Job Titles', job_titles, default=job_titles)
+        # Display the filtered dataframe
+        filtered_df4 = filtered_df4[filtered_df4[column1].isin(selected_job_titles)]
         plot_horizontal_graph(filtered_df4, column1, column2, 'Salary ranges for IT jobs')
 
-    # Initialize the dataset
-    indeed_df = initialize_indeed_dataset()
-    st.title('Most Commonly Required IT Competencies in the Industry')
-    column = 'Sub-skill'
-    # Handle missing values
-    indeed_df[column].fillna('Unknown', inplace=True)
-    # Initialize filtered_df5
-    filtered_df5 = indeed_df.copy()  # Start with a copy of the full dataset
-    # Get unique sub-skills for the multiselect box
-    sub_skills = indeed_df[column].unique()
-    selected_sub_skills = st.multiselect('Select Sub-skills', sub_skills, default=[])
-    # Filter the DataFrame based on selected sub-skills
-    if selected_sub_skills:  # Check if any sub-skills are selected
-        filtered_df5 = filtered_df5[filtered_df5[column].isin(selected_sub_skills)]
-        plot_histogram(filtered_df5, column, selected_sub_skills, 'Most Commonly Required IT Competencies in the Industry')
+        # Initialize the dataset
+        indeed_df = initialize_indeed_dataset()
+        st.title('Most Commonly Required IT Competencies in the Industry')
+        column = 'Sub-skill'
+        # Handle missing values
+        indeed_df[column].fillna('Unknown', inplace=True)
+        # Initialize filtered_df5
+        filtered_df5 = indeed_df.copy()  # Start with a copy of the full dataset
+        # Get unique sub-skills for the multiselect box
+        sub_skills = indeed_df[column].unique()
+        selected_sub_skills = st.multiselect('Select Sub-skills', sub_skills, default=[])
+        # Filter the DataFrame based on selected sub-skills
+        if selected_sub_skills:  # Check if any sub-skills are selected
+            filtered_df5 = filtered_df5[filtered_df5[column].isin(selected_sub_skills)]
+            plot_histogram(filtered_df5, column, selected_sub_skills, 'Most Commonly Required IT Competencies in the Industry')
 
-    # Initialize the certificate dataset
-    itjob_Certificate_df = initialize_certificate_dataset()
+        # Initialize the dataset
+        itjob_Certificate_df = initialize_certificate_dataset
 
-    if itjob_Certificate_df is not None:
-        st.title("Distribution of Certificates in the Data File")
-
+        st.title("Distribution of Certificates in Singapore")
         if 'certification_text' in itjob_Certificate_df.columns:
-            # Count occurrences of each certificate
+        # Count occurrences of each certificate
             certificate_counts = itjob_Certificate_df['certification_text'].value_counts().sort_index()
 
-            # Display the top 3 most common certificates
-            top3_certificates = certificate_counts.nlargest(3)
-            st.write("**Top 3 Most Common Certificates:**")
-            for certificate, count in top3_certificates.items():
-                st.write(f"{certificate}: {count} people")
+        # Display the top 3 most common certificates
+        top3_certificates = certificate_counts.nlargest(3)
+        st.write("Top 3 Most Common Certificates:")
+        for certificate, count in top3_certificates.items():
+            st.write(f"{certificate}: {count} people")
 
-            # Multi-select to filter certificates
-            selected_certificates = st.multiselect(
-                'Select certificates to visualize',
-                options=certificate_counts.index.tolist(),  # Provide the list of options
-                default=[]  # Default to show none
-            )
+        # Multi-select to filter certificates
+        selected_certificates = st.multiselect(
+        'Select certificates to visualize',
+        options6=certificate_counts.index.tolist(),  # Provide the list of options
+        default=[]  # Default to show none
+    )
 
-            # Filter the data based on selected certificates
-            if selected_certificates:
-                filtered_counts6 = certificate_counts[selected_certificates]
-                plot_line_chart(filtered_counts6, 'Distribution of Certificates in the Data File')
+        # Filter the data based on selected certificates
+        filtered_counts = certificate_counts[selected_certificates]
+        if selected_certificates:
+            filtered_counts6 = certificate_counts[selected_certificates]
+            plot_line_chart(filtered_counts6, 'Distribution of Certificates in the Data File')
