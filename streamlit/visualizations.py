@@ -132,8 +132,8 @@ def visualizations():
                 plt.figure(figsize=(10, 6))
                 plt.bar(filtered_counts.index, filtered_counts.values, color='skyblue')
                 plt.xlabel('Skills')
-                plt.ylabel('Count')
-                plt.title('Count of Selected Skills')
+                plt.ylabel('No. of Position Require These Skills')
+                plt.title(f'Distribution of Skills')
                 plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
                 st.pyplot(plt)
             else:
@@ -142,7 +142,7 @@ def visualizations():
             st.warning("No skills found in the filtered job titles.")
     else:
         st.warning("No skills found in the dataset or the selected job titles.")
-        
+
 def visualisations():
     #Initialize Dataset
     ITJobs_df = initialize_ITJobs_dataset()
