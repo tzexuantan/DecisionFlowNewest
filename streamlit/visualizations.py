@@ -17,7 +17,7 @@ def initialize_indeed_dataset():
 def initialize_ITJobs_dataset():
     # Get the directory of the current script
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    # Build the file path to Final.xlsx
+    # File path to the dataset
     file_path = os.path.join(current_dir, "../dataset/IT Jobs.xlsx")
     ITJobs_df = pd.read_excel(file_path)
     return ITJobs_df
@@ -25,7 +25,7 @@ def initialize_ITJobs_dataset():
 def initialize_itjob_headerfinal_dataset(): 
     # Get the directory of the current script
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    # Build the file path to Final.xlsx
+    # File path to the dataset
     file_path = os.path.join(current_dir, "../dataset/itjob_headerfinal.xlsx")
     itjob_headerfinal_df = pd.read_excel(file_path)
     return itjob_headerfinal_df
@@ -90,7 +90,7 @@ def plot_line_chart(data, title):
         plt.title(title)
         plt.xlabel('Certificate')
         plt.ylabel('No. of people with the certificate')
-        plt.xticks(rotation=90)  # Rotate x-axis labels for better readability
+        plt.xticks(rotation=90)
         plt.grid(True)
         st.pyplot(plt)
 
@@ -251,7 +251,7 @@ def visualizations():
     # Initialize the dataset
     indeed_df = initialize_indeed_dataset()
 
-    # Title of the app
+    # Title
     st.title("Companies that are hiring the IT roles")
 
     # Column to plot
@@ -296,14 +296,12 @@ def visualizations():
                 # Plot the bar graph for selected companies
                 plot_bar_graph(filtered_counts, company_x_col, company_y_col, 'Companies that are hiring the IT roles')
 
-    # Assume 'initialize_salary_dataset' is a function that loads the dataset
     itjob_salary_df = initialize_salary_dataset()
 
     st.title("Salary ranges for IT jobs")
     column1 = 'Job Title'
     column2 = 'Salary'
 
-    # Convert Salary column to numeric
     itjob_salary_df[column2] = pd.to_numeric(itjob_salary_df[column2], errors='coerce')
 
     # Handle missing values
