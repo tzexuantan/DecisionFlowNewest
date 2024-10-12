@@ -69,62 +69,80 @@ def plot_pie_chart(data, column):
     plt.axis('equal')
     plt.plot()
 
-#Function to display visualzations tab
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+import matplotlib.pyplot as plt
+
 def visualizations():
-    #Initialize dataset
+    # Initialize dataset
     indeed_df = initialize_indeed_dataset()
 
     # Bar Graph
-    st.title("Distributions of Skills")
+    st.title("Distributions of Skills and Job Titles")
 
-    # Auto-select a fixed column (replace 'Skills' with the actual column name in your file)
-    column_to_plot = "Skill"  # Set this to the column name for skills in your Excel file
+    # Specify columns for skills and job titles
+    skill_column = "Skill"  # Set this to the column name for skills in your Excel file
+    job_title_column = "Job Title"  # Set this to the column name for job titles in your Excel file
 
-    if column_to_plot not in indeed_df.columns:
-        st.error(f"Column '{column_to_plot}' not found in the Excel file.")
-    else:
-        # Check if the column contains object-type data
-        if indeed_df[column_to_plot].dtype == 'object':
-            # Count occurrences of each category (sub-skills)
-            category_counts = indeed_df[column_to_plot].value_counts()
+    # Check if columns exist
+    if skill_column not in indeed_df.columns:
+        st.error(f"Column '{skill_column}' not found in the Excel file.")
+        return
 
-            # Check if category_counts is not empty
-            if not category_counts.empty:
-                # Multiselect filter for sub-skills
-                selected_skills = st.multiselect(
-                    'Select specific skills to visualize',
-                    options=category_counts.index.tolist(),
-                    default=category_counts.index.tolist()  # Default to show all
-                )
+    if job_title_column not in indeed_df.columns:
+        st.error(f"Column '{job_title_column}' not found in the Excel file.")
+        return
 
-                # Create a filtered data series based on selected skills
-                filtered_counts = category_counts[selected_skills]
+    # Predefined keywords to filter job titles
+    predefined_keywords = ["Scientist", "IT", "Analyst", "DevOps", "Developer", "Computer Science", "Technology"]
 
-                # Ensure that filtered_counts is not empty before using min() and max()
-                if not filtered_counts.empty:
-                    # Add a slider for selecting the range of counts to filter
-                    min_count, max_count = int(filtered_counts.min()), int(filtered_counts.max())
-                    selected_range = st.slider(
-                        'Select count range for filtering',
-                        min_value=min_count,
-                        max_value=max_count,
-                        value=(min_count, max_count)
-                    )
+    # Multi-select for job title filtering
+    selected_keywords = st.multiselect(
+        'Select job title keywords to filter:',
+        options=predefined_keywords,
+        default=predefined_keywords  # Default to show all
+    )
 
-                    # Further filter the counts based on the selected range
-                    filtered_counts = filtered_counts[(filtered_counts >= selected_range[0]) & (filtered_counts <= selected_range[1])]
+    # Create a regex pattern to include any job title containing the selected keywords
+    pattern = '|'.join(selected_keywords)
 
-                    # Create a bar chart for the filtered sub-skills
-                    if not filtered_counts.empty:
-                        plot_bar_graph(filtered_counts, column_to_plot)
-                        st.pyplot(plt)
-                    else:
-                        st.warning("No data available for the selected count range.")
-                else:
-                    st.warning("No skills selected or found.")
+    # Filter the DataFrame based on selected job titles
+    filtered_df = indeed_df[
+        (indeed_df[job_title_column].str.contains(pattern, case=False, na=False))
+    ]
+
+    # Count occurrences of each skill after filtering by job titles
+    if skill_column in filtered_df.columns and filtered_df[skill_column].dtype == 'object':
+        category_counts = filtered_df[skill_column].value_counts()
+
+        if not category_counts.empty:
+            # Multi-select filter for sub-skills
+            selected_skills = st.multiselect(
+                'Select specific skills to visualize',
+                options=category_counts.index.tolist(),
+                default=category_counts.index.tolist()  # Default to show all skills
+            )
+
+            # Create a filtered data series based on selected skills
+            filtered_counts = category_counts[selected_skills]
+
+            # Create a bar chart for the filtered sub-skills
+            if not filtered_counts.empty:
+                plt.figure(figsize=(10, 6))
+                plt.bar(filtered_counts.index, filtered_counts.values, color='skyblue')
+                plt.xlabel('Skills')
+                plt.ylabel('Count')
+                plt.title('Count of Selected Skills')
+                plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+                st.pyplot(plt)
             else:
-                st.warning("Please select at least one skill to visualize.")
-
+                st.warning("No data available for the selected skills.")
+        else:
+            st.warning("No skills found in the filtered job titles.")
+    else:
+        st.warning("No skills found in the dataset or the selected job titles.")
+        
 def visualisations():
     #Initialize Dataset
     ITJobs_df = initialize_ITJobs_dataset()
