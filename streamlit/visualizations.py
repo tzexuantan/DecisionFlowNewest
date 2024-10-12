@@ -37,11 +37,6 @@ def initialize_salary_dataset():
     file_path = os.path.join(current_dir, "../dataset/Salary_Data_Based_country_and_race.xlsx")
     itjob_salary_df = pd.read_excel(file_path)
     return itjob_salary_df
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-=======
->>>>>>> Stashed changes
 
 def initialize_skillset_dataset():
     # Get the directory of the current script
@@ -50,13 +45,12 @@ def initialize_skillset_dataset():
     file_path = os.path.join(current_dir, "../dataset/Skillset.xlsx")
     itjob_skillset_df = pd.read_excel(file_path)
     return itjob_skillset_df
->>>>>>> f86299028180ead29864a82db4c6d9320d38a936
 
 def initialize_certificate_dataset():
     # Get the directory of the current script
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # File path to the dataset
-    file_path = os.path.join(current_dir, "../dataset/Certificate.xlsx")
+    file_path = os.path.join(current_dir, "../dataset/Certificate.csv")
     itjob_Certificate_df = pd.read_excel(file_path)
     return itjob_Certificate_df
 
@@ -89,10 +83,9 @@ def plot_horizontal_graph(data, col1, col2, title):
     plt.savefig('plot.png')
     st.pyplot(plt)
 
-def plot_histogram(data,col, chosen, title):
+def plot_histogram(data,col,chosen, title):
     plt.figure(figsize=(10, 6))
-    num_bins = len(chosen) if len(chosen) > 0 else 1
-    plt.hist(data[col], bins=num_bins, edgecolor='k', alpha=0.7)
+    plt.hist(data[col], bins=len(chosen), edgecolor='k', alpha=0.7)
     plt.xlabel('Sub-skill')
     plt.ylabel('Frequency')
     plt.title(title)
@@ -262,20 +255,10 @@ if indeed_df[column_to_plot3].dtype == 'object':
             # Plot the bar graph for selected companies
             plot_bar_graph(filtered_counts, company_x_col, company_y_col, 'Companies that are hiring the IT roles')
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-    # Assume 'initialize_salary_dataset' is a function that loads the dataset
-    itjob_salary_df = initialize_salary_dataset()
-
-    st.title('Salary ranges for IT jobs')
-=======
->>>>>>> Stashed changes
 # Assume 'initialize_salary_dataset' is a function that loads the dataset
     itjob_salary_df = initialize_salary_dataset()
 
     st.title("Salary ranges for IT jobs")
->>>>>>> f86299028180ead29864a82db4c6d9320d38a936
     column1 = 'Job Title'
     column2 = 'Salary'
 
@@ -297,7 +280,6 @@ if indeed_df[column_to_plot3].dtype == 'object':
 
 # Update job titles based on the filtered DataFrame
     job_titles = filtered_df4[column1].unique()
-<<<<<<< Updated upstream
 
 # Allow users to select job titles, defaulting to all options if none are selected
     selected_job_titles = st.multiselect('Select Job Titles', job_titles, default=job_titles)
@@ -338,93 +320,8 @@ if indeed_df[column_to_plot3].dtype == 'object':
         if 'certification_text' in itjob_Certificate_df.columns:
     # Count occurrences of each certificate
             certificate_counts = itjob_Certificate_df['certification_text'].value_counts().sort_index()
-=======
-<<<<<<< HEAD
 
-    # Allow users to select job titles, defaulting to none
-    selected_job_titles = st.multiselect('Select Job Titles', job_titles, default=[])
-
-    # Further filter the DataFrame based on selected job titles
-    if selected_job_titles:
-        filtered_df4 = filtered_df4[filtered_df4[column1].isin(selected_job_titles)]
-        plot_horizontal_graph(filtered_df4, column1, column2, 'Salary ranges for IT jobs')
-
-    # Initialize the dataset
-    indeed_df = initialize_indeed_dataset()
-
-    st.title('Most Commonly Required IT Competencies in the Industry')
-    column = 'Sub-skill'
-
-    # Handle missing values
-    indeed_df[column].fillna('Unknown', inplace=True)
-
-    # Initialize filtered_df5
-    filtered_df5 = indeed_df.copy()  # Start with a copy of the full dataset
-
-    # Get unique sub-skills for the multiselect box
-    sub_skills = indeed_df[column].unique()
-    selected_sub_skills = st.multiselect('Select Sub-skills', sub_skills, default=[])
-
-    # Filter the DataFrame based on selected sub-skills
-    if selected_sub_skills:  # Check if any sub-skills are selected
-        filtered_df5 = filtered_df5[filtered_df5[column].isin(selected_sub_skills)]
-        plot_histogram(filtered_df5, column, selected_sub_skills, 'Most Commonly Required IT Competencies in the Industry')
-
-
- # Initialize the certificate dataset
-itjob_Certificate_df = initialize_certificate_dataset()
-
-if itjob_Certificate_df is not None:
-    st.title("Distribution of Certificates in the Data File")
->>>>>>> Stashed changes
-
-    if 'certification_text' in itjob_Certificate_df.columns:
-        # Count occurrences of each certificate
-        certificate_counts = itjob_Certificate_df['certification_text'].value_counts().sort_index()
-=======
-
-# Allow users to select job titles, defaulting to all options if none are selected
-    selected_job_titles = st.multiselect('Select Job Titles', job_titles, default=job_titles)
-
-# Further filter the DataFrame based on selected job titles
-    filtered_df4 = filtered_df4[filtered_df4[column1].isin(selected_job_titles)]
-
-# Display the filtered dataframe
-    if filtered_df4.empty:
-        st.write("No jobs match your selected criteria.")
-    else:
-        st.write(filtered_df4)
-        # Assuming you have a function that initializes your skillset dataset
-        itjob_skillset_df = initialize_skillset_dataset()
-
-        st.title("Most Commonly Required IT Competencies in the Industry")
-        column = 'Sub-skill'
-
-        # Handle missing values
-        itjob_skillset_df[column].fillna('Unknown', inplace=True)
-
-        # Get unique sub-skills for the multiselect box
-        sub_skills = itjob_skillset_df[column].unique()
-        selected_sub_skills = st.multiselect('Select Sub-skills', sub_skills, default=[])
-
-        # Filter the DataFrame based on selected sub-skills
-        if selected_sub_skills:  # Check if any sub-skills are selected
-            filtered_df5 = itjob_skillset_df[itjob_skillset_df[column].isin(selected_sub_skills)]
-        else:
-            filtered_df5 = itjob_skillset_df  # If no sub-skills selected, show the full dataset
-
-        # Optionally, display the filtered DataFrame
-        st.write(filtered_df5)
-
-        itjob_Certificate_df = initialize_certificate_dataset
-    
-        st.title("Distribution of Certificates in the Data File")
-        if 'certification_text' in itjob_Certificate_df.columns:
-    # Count occurrences of each certificate
-            certificate_counts = itjob_Certificate_df['certification_text'].value_counts().sort_index()
->>>>>>> f86299028180ead29864a82db4c6d9320d38a936
-
-        # Display the top 3 most common certificates
+    # Display the top 3 most common certificates
         top3_certificates = certificate_counts.nlargest(3)
         st.write("**Top 3 Most Common Certificates:**")
         for certificate, count in top3_certificates.items():
@@ -433,11 +330,9 @@ if itjob_Certificate_df is not None:
         # Multi-select to filter certificates
         selected_certificates = st.multiselect(
             'Select certificates to visualize',
-            options=certificate_counts.index.tolist(),  # Provide the list of options
+            options6=certificate_counts.index.tolist(),  # Provide the list of options
             default=[]  # Default to show none
         )
 
         # Filter the data based on selected certificates
-        if selected_certificates:
-            filtered_counts6 = certificate_counts[selected_certificates]
-            plot_line_chart(filtered_counts6, 'Distribution of Certificates in the Data File')
+        filtered_counts = certificate_counts[selected_certificates]
