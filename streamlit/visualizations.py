@@ -54,14 +54,15 @@ def initialize_certificate_dataset():
     itjob_Certificate_df = pd.read_excel(file_path)
     return itjob_Certificate_df
 
-def plot_bar_graph(data, company_x_col, y_col, title):
+def plot_bar_graph(data, company_x_col, company_y_col, title):
     x_col = company_x_col
+    y_col = company_y_col
     plt.figure(figsize=(10, 5))
     plt.xlabel(x_col)
     plt.ylabel(y_col)
     plt.title(title)
     
-    data.plot(kind='bar', x=x_col, y=y_col color='skyblue')
+    data.plot(kind='bar', x=x_col, y=y_col, color='skyblue')
 
 def plot_pie_chart(size, label, title):
     plt.figure(figsize=(8,8))
@@ -195,22 +196,6 @@ def visualizations():
     # Display pie chart 
     st.plotly_chart(fig)
 
-import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
-
-# Define the function for plotting
-def plot_bar_graph(data, company_x_col, y_col, title):
-    x_col = company_x_col
-    plt.figure(figsize=(10, 5))
-    plt.xlabel(x_col)
-    plt.ylabel(y_col)
-    plt.title(title)
-    
-    data.plot(kind='bar', x=x_col, y=y_col, color='skyblue')
-    plt.tight_layout()
-    st.pyplot(plt)
-
 # Initialize the dataset
 indeed_df = initialize_indeed_dataset()
 
@@ -219,7 +204,8 @@ st.title("Companies that are hiring the IT roles")
 
 # Column to plot
 column_to_plot3 = "Company/Candidate Name"
-company_x_col = "Company"  # Define your company_x_col here
+company_x_col = "Company"
+company_y_col = "No. of roles"
 
 if indeed_df[column_to_plot3].dtype == 'object':
     # Count occurrences of each category
@@ -256,7 +242,7 @@ if indeed_df[column_to_plot3].dtype == 'object':
             filtered_counts.columns = [company_x_col, 'Count']
 
             # Plot the bar graph for selected companies
-            plot_bar_graph(filtered_counts, company_x_col, 'Count', 'Companies that are hiring the IT roles')
+            plot_bar_graph(filtered_counts, company_x_col, company_y_col, 'Companies that are hiring the IT roles')
 
 
     #Initialize Dataset
