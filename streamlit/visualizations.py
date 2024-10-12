@@ -257,26 +257,6 @@ def visualizations():
     min_value = st.number_input('Min Salary', min_value=min_salary, max_value=max_salary, value=min_salary)
     max_value = st.number_input('Max Salary', min_value=min_salary, max_value=max_salary, value=max_salary)
 
-    # Assume 'initialize_salary_dataset' is a function that loads the dataset
-    itjob_salary_df = initialize_salary_dataset()
-
-    st.title("Salary ranges for IT jobs")
-    column1 = 'Job Title'
-    column2 = 'Salary'
-
-    # Convert Salary column to numeric
-    itjob_salary_df[column2] = pd.to_numeric(itjob_salary_df[column2], errors='coerce')
-
-    # Handle missing values
-    itjob_salary_df[column1].fillna('', inplace=True)
-    itjob_salary_df[column2].fillna(0, inplace=True)
-
-    # Add number inputs for filtering salary range
-    min_salary = itjob_salary_df[column2].min()
-    max_salary = itjob_salary_df[column2].max()
-    min_value = st.number_input('Min Salary', min_value=min_salary, max_value=max_salary, value=min_salary)
-    max_value = st.number_input('Max Salary', min_value=min_salary, max_value=max_salary, value=max_salary)
-
     # Filter the DataFrame based on the salary range
     filtered_df4 = itjob_salary_df[(itjob_salary_df[column2] >= min_value) & (itjob_salary_df[column2] <= max_value)]
 
@@ -289,8 +269,8 @@ def visualizations():
     # Further filter the DataFrame based on selected job titles
     filtered_df4 = filtered_df4[filtered_df4[column1].isin(selected_job_titles)]
 
-    # Display a message if no jobs match the selected criteria, else show visualization
-    plot_horizontal_graph(filtered_df4, column1, column2, 'Salary ranges for IT jobs')
+    if selected_job_titles:
+        plot_horizontal_graph(filtered_df4, column1, column2, 'Salary ranges for IT jobs')
 
     # Initialize the dataset
     indeed_df = initialize_indeed_dataset()
@@ -308,29 +288,30 @@ def visualizations():
         filtered_df5 = filtered_df5[filtered_df5[column].isin(selected_sub_skills)]
         plot_histogram(filtered_df5, column, selected_sub_skills, 'Most Commonly Required IT Competencies in the Industry')
 
-    # Initialize the dataset
-    itjob_Certificate_df = initialize_certificate_dataset
+    # Initialize the certificate dataset
+    itjob_Certificate_df = initialize_certificate_dataset()
 
-    st.title("Distribution of Certificates in the Data File")
-    if 'certification_text' in itjob_Certificate_df.columns:
-    # Count occurrences of each certificate
-        certificate_counts = itjob_Certificate_df['certification_text'].value_counts().sort_index()
+    if itjob_Certificate_df is not None:
+        st.title("Distribution of Certificates in the Data File")
 
-    # Display the top 3 most common certificates
-    top3_certificates = certificate_counts.nlargest(3)
-    st.write("**Top 3 Most Common Certificates:**")
-    for certificate, count in top3_certificates.items():
-        st.write(f"{certificate}: {count} people")
+        if 'certification_text' in itjob_Certificate_df.columns:
+            # Count occurrences of each certificate
+            certificate_counts = itjob_Certificate_df['certification_text'].value_counts().sort_index()
 
-    # Multi-select to filter certificates
-    selected_certificates = st.multiselect(
-        'Select certificates to visualize',
-        options6=certificate_counts.index.tolist(),  # Provide the list of options
-        default=[]  # Default to show none
-    )
+            # Display the top 3 most common certificates
+            top3_certificates = certificate_counts.nlargest(3)
+            st.write("**Top 3 Most Common Certificates:**")
+            for certificate, count in top3_certificates.items():
+                st.write(f"{certificate}: {count} people")
 
-    # Filter the data based on selected certificates
-    filtered_counts = certificate_counts[selected_certificates]
-    if selected_certificates:
-        filtered_counts6 = certificate_counts[selected_certificates]
-        plot_line_chart(filtered_counts6, 'Distribution of Certificates in the Data File')
+            # Multi-select to filter certificates
+            selected_certificates = st.multiselect(
+                'Select certificates to visualize',
+                options=certificate_counts.index.tolist(),  # Provide the list of options
+                default=[]  # Default to show none
+            )
+
+            # Filter the data based on selected certificates
+            if selected_certificates:
+                filtered_counts6 = certificate_counts[selected_certificates]
+                plot_line_chart(filtered_counts6, 'Distribution of Certificates in the Data File')
