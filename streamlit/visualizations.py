@@ -148,23 +148,21 @@ def visualizations():
                 filtered_counts = category_counts[selected_skills]
 
                 # Display Analysis
-                st.write("## Analysis")
+                st.title("💪 Distribution of Skills")
                 st.write("""
-                ### 💪 Distribution of Skills: Visual Description 📊
-                **Top IT skills needed for company positions:**
-                - **Web Development (WebD)**, **Coding**, and **DevOps** are among the most in-demand technical skills.
-                - Soft skills like **communication**, **teamwork**, and **problem-solving** are crucial across industries.
+                        ### Visual Description 📊
+                        **Top IT skills needed for company positions:**
+                        - **Web Development (WebD)**, **Coding**, and **DevOps** are among the most in-demand technical skills.
+                        - Soft skills like **communication**, **teamwork**, and **problem-solving** are crucial across industries.
 
-                **Importance of These Skills ✅:**
-                - **Web Development (WebD)** ensures a functional, user-friendly online presence, essential for customer engagement and e-commerce.
-                - **Coding** serves as the foundation for software development, enabling IT professionals to create, test, and maintain applications while automating processes for efficiency.
-                - **DevOps** facilitates efficient software delivery, promoting collaboration between development and operations teams for faster, more reliable updates and scalable solutions.
-                - **Soft skills** like communication, teamwork, and problem-solving enhance collaboration and productivity in any workplace.
+                        **Importance of These Skills ✅:**
+                        - **Web Development (WebD)** ensures a functional, user-friendly online presence, essential for customer engagement and e-commerce.
+                        - **Coding** serves as the foundation for software development, enabling IT professionals to create, test, and maintain applications while automating processes for efficiency.
+                        - **DevOps** facilitates efficient software delivery, promoting collaboration between development and operations teams for faster, more reliable updates and scalable solutions.
+                        - **Soft skills** like communication, teamwork, and problem-solving enhance collaboration and productivity in any workplace.
 
-                **Unlock your potential by mastering these skills!** 💼
-                - These are the building blocks for success in today’s job market.
-                - Stay focused—your dream job is within reach! 🙌
-                """)
+                        **Unlock your potential by mastering these skills!These are the building blocks for success in today’s job market. Stay focused—your dream job is within reach! 🙌**
+                        """)
 
                 # Create a bar chart for the filtered sub-skills
                 if not filtered_counts.empty:
@@ -188,7 +186,7 @@ def visualizations():
     # Create the pie chart
     fig = px.pie(values=sizes, names=job, title="IT Entry Level Jobs")
 
-    st.title("📈 Entry Level IT Jobs")
+    st.title("📈 Entry Level IT Jobs") 
 
     # Combined analysis using st.write
     st.write("""
@@ -206,8 +204,6 @@ def visualizations():
             - **Data Reporting Analyst**: Gathers and prepares data, cleans and manipulates it, and creates comprehensive reports tailored to stakeholder needs.
             - **Data Quality Analyst**: Assesses data quality to identify inaccuracies, implements processes for data cleaning and validation, and develops metrics for quality monitoring.
             - **BI Analyst**: Prepares and cleans data, analyzes it using SQL and Excel, and creates interactive dashboards and reports.
-
-            ---
 
             As you embark on your journey in the tech industry, remember that **every challenge is an opportunity to learn and grow**. 🌱 Starting with an entry-level job will serve as a stepping stone to greater success. **Good luck in your endeavors!** 🎉✨
             """)
@@ -240,8 +236,6 @@ def visualizations():
             - **Diplomas** focus on specific skills, but they may not cover the broad knowledge required for career advancement in many IT roles.
             - **Certifications**, while helpful for learning specific technologies, may leave gaps in broader IT concepts, limiting long-term career growth.
 
-            ---
-
             Pursuing a **Bachelor's Degree** can unlock new opportunities in IT, but remember, your **Diploma** and **Certifications** are valuable too. Each step builds your skill set and prepares you for success in the IT industry. 🌟
             """)
 
@@ -250,9 +244,6 @@ def visualizations():
 
     # Initialize the dataset
     indeed_df = initialize_indeed_dataset()
-
-    # Title
-    st.title("Companies that are hiring the IT roles")
 
     # Column to plot
     column_to_plot3 = "Company/Candidate Name"
@@ -263,28 +254,19 @@ def visualizations():
         # Count occurrences of each category
         category_counts3 = indeed_df[column_to_plot3].value_counts()
 
-        # Display the top 3 companies hiring the most IT roles for the entire dataset
-        top3_companies = category_counts3.nlargest(3)
-        st.write("Top 3 companies that are hiring the most IT roles:")
-        for company, count in top3_companies.items():
-            st.write(f"{company}: {count} roles")
-
         # Display the company with the highest and lowest number of roles
         highest_company = category_counts3.idxmax()
         highest_count = category_counts3.max()
         lowest_company = category_counts3.idxmin()
         lowest_count = category_counts3.min()
 
-        st.write(f"Company with the highest number of roles: {highest_company} ({highest_count} roles)")
-        st.write(f"Company with the lowest number of roles: {lowest_company} ({lowest_count} role)")
-
         # Check if category_counts is not empty
         if not category_counts3.empty:
             # Multi-select to choose specific data
             selected_companies = st.multiselect(
-                'Select companies to visualize',
+                label='Select companies to visualize',
                 options=category_counts3.index.tolist(),  # Provide the list of options
-                default=[]  # Default to show none
+                default=[]# Default to show none
             )
 
             # Filter the data based on selected companies
@@ -293,12 +275,27 @@ def visualizations():
                 filtered_counts = filtered_data[column_to_plot3].value_counts().reset_index()
                 filtered_counts.columns = [company_x_col, company_y_col]  # Ensure the columns match correctly
 
-                # Plot the bar graph for selected companies
-                plot_bar_graph(filtered_counts, company_x_col, company_y_col, 'Companies that are hiring the IT roles')
+        # Analysis
+        st.title("🏢 Companies Hiring IT Roles")
+        st.write("""
+                ## **Visual Description 📊**  
+                The top 3 companies that are hiring the most IT roles are **Deloitte** (1,297 roles), **Accenture** (576 roles), and **Amazon Web Services, Inc** (551 roles) respectively.
+
+                ## **Company Background 💻**  
+                **Deloitte** is expanding its IT workforce to support emerging technologies like AI, cloud computing, and cybersecurity, which are in high demand globally. This hiring spree aligns with the firm's global strategy to meet the growing need for digital transformation solutions and enhanced cybersecurity services.
+
+                **Accenture** is actively hiring for IT roles due to its expansive focus on digital transformation, consulting, and technology-driven services across numerous industries. The company leverages cutting-edge technologies like AI, cloud computing, and automation to support its clients in navigating complex business challenges and driving innovation.
+
+                **Amazon Web Services (AWS)** is hiring extensively due to its rapid growth in the cloud computing sector. AWS has been focusing on areas like artificial intelligence, machine learning, generative AI, and expanding its global cloud infrastructure.
+
+                These companies offer innovative environments that encourage personal growth, skill development, and the opportunity to make a real impact in the fast-evolving digital landscape. Don’t hold back—take that step forward and build the career you’ve always dreamed of! 💭
+                """)
+
+        # Plot the bar graph for selected companies
+        plot_bar_graph(filtered_counts, company_x_col, company_y_col, 'Companies that are hiring the IT roles')
 
         itjob_salary_df = initialize_salary_dataset()
 
-        st.title("Salary ranges for IT jobs")
         column1 = 'Job Title'
         column2 = 'Salary'
 
@@ -320,8 +317,14 @@ def visualizations():
         # Update job titles based on the filtered DataFrame
         job_titles = filtered_df4[column1].unique()
 
+        st.write("""
+                **Let's look into the salary range of different IT Jobs! Select the job you are interested in 🎀**
+
+                Explore the different jobs and make your decision wisely! Ps. You can explore other jobs too
+                """)
+        
         # Allow users to select job titles, defaulting to all options if none are selected
-        selected_job_titles = st.multiselect('Select Job Titles', job_titles, default=job_titles)
+        selected_job_titles = st.multiselect('Select Job Titles', job_titles, default=[])
         # Display the filtered dataframe
         filtered_df4 = filtered_df4[filtered_df4[column1].isin(selected_job_titles)]
         plot_horizontal_graph(filtered_df4, column1, column2, 'Salary ranges for IT jobs')
@@ -329,51 +332,61 @@ def visualizations():
         # Initialize the dataset
         indeed_df = initialize_indeed_dataset()
 
-        st.title('Most Commonly Required IT Competencies in the Industry')
         column = 'Sub-skill'
 
         # Handle missing values
-        indeed_df[column].fillna('Unknown', inplace=True)
+        indeed_df[column].fillna('Unknown')
 
         # Initialize filtered_df5
         filtered_df5 = indeed_df.copy()  # Start with a copy of the full dataset
+
+        title="IT Competencies in the Industry"
 
         # Get unique sub-skills for the multiselect box
         sub_skills = indeed_df[column].unique()
         selected_sub_skills = st.multiselect('Select Sub-skills', sub_skills, default=[])
 
-        # Display the top 3 most commonly required competencies
-        top3_competencies = indeed_df[column].value_counts().nlargest(3)
-        st.write("**Top 3 Most Commonly Required IT Competencies:**")
-        for competency, count in top3_competencies.items():
-            st.write(f"{competency}: {count} positions")
-
         # Filter the DataFrame based on selected sub-skills
         if selected_sub_skills:  # Check if any sub-skills are selected
             filtered_df5 = filtered_df5[filtered_df5[column].isin(selected_sub_skills)]
-            plot_histogram(filtered_df5, column, selected_sub_skills, 'Most Commonly Required IT Competencies in the Industry')
+            plot_histogram(filtered_df5, column, selected_sub_skills, 'IT Competencies in the Industry')
 
         # Initialize the dataset
-        itjob_Certificate_df = initialize_certificate_dataset
+        itjob_Certificate_df = initialize_certificate_dataset()
 
         st.title("Distribution of Certificates in Singapore")
         if 'certification_text' in itjob_Certificate_df.columns:
         # Count occurrences of each certificate
             certificate_counts = itjob_Certificate_df['certification_text'].value_counts().sort_index()
 
-        # Display the top 3 most common certificates
-        top3_certificates = certificate_counts.nlargest(3)
-        st.write("Top 3 Most Common Certificates:")
-        for certificate, count in top3_certificates.items():
-            st.write(f"{certificate}: {count} people")
-
         # Multi-select to filter certificates
         selected_certificates = st.multiselect(
         'Select certificates to visualize',
-        options6=certificate_counts.index.tolist(),  # Provide the list of options
+        options=certificate_counts.index.tolist(),  # Provide the list of options
         default=[]  # Default to show none
     )
 
+        # Section for IT Certificates
+        st.title("📜 IT Certificates")
+
+        # Combined Certificates Description and Purpose
+        st.write("""
+                ## **Visual Description 📊**  
+                The top 3 certificates in the IT industry are **Cisco (CCNA/CCNP/CCIE)** - 263 People, **Project Management Professional (PMP)** - 155 People and **Information Technology Infrastructure Library (ITIL)** - 153 People
+
+                ## **Purpose 📎**  
+                - **Cisco (CCNA/CCNP/CCIE)**: These are essential credentials for IT professionals aiming to advance their careers in networking and IT infrastructure. Employers greatly value these certificates as they demonstrate a thorough proficiency in network fundamentals, security protocols, and sophisticated troubleshooting procedures.
+  
+                - **PMP (Project Management Professional)**: This certification denotes the knowledge and expertise needed to handle projects successfully. Acquiring the PMP certification can boost prospects for professional growth, as numerous establishments value this qualification and frequently require it for project management positions.
+  
+                - **ITIL (Information Technology Infrastructure Library)**: ITIL is a widely used framework for IT service management (ITSM) that offers best practices to assist businesses in planning, implementing, and enhancing their IT services. It is structured around a lifecycle that includes service strategy, design, transition, operation, and continual improvement.
+
+                - Overall, these IT Certifications deepen your knowledge and demonstrate your commitment to excellence in your field. They will help enhance employability and boost earning potential.
+
+                **Upgrade yourself** and position yourself as a leader in your industry, ready to tackle complex challenges and drive innovation. Don’t just wait for opportunities—create them! 🌈
+                """)
+
+        
         # Filter the data based on selected certificates
         filtered_counts = certificate_counts[selected_certificates]
         if selected_certificates:
