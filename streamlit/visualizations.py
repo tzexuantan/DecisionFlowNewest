@@ -34,13 +34,9 @@ def initialize_salary_dataset():
     # Get the directory of the current script
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # File path to the dataset
-    file_path = os.path.join(current_dir, "../dataset/Salary_Data_Based_country_and_race.csv")
-    try:
-        itjob_salary_df = pd.read_excel(file_path)
-        return itjob_salary_df
-    except Exception as e:
-        st.error(f"Error reading the Excel file: {e}")
-        return None
+    file_path = os.path.join(current_dir, "../dataset/Salary_Data_Based_country_and_race.xlsx")
+    itjob_salary_df = pd.read_excel(file_path)
+    return itjob_salary_df
 
 def initialize_skillset_dataset():
     # Get the directory of the current script
@@ -259,66 +255,71 @@ if indeed_df[column_to_plot3].dtype == 'object':
             # Plot the bar graph for selected companies
             plot_bar_graph(filtered_counts, company_x_col, company_y_col, 'Companies that are hiring the IT roles')
 
-    #Initialize Dataset
-    itjob_salary_df = initialize_salary_dataset
-    
+# Assume 'initialize_salary_dataset' is a function that loads the dataset
+    itjob_salary_df = initialize_salary_dataset()
+
     st.title("Salary ranges for IT jobs")
     column1 = 'Job Title'
     column2 = 'Salary'
 
-    # Convert Salary column to numeric
+# Convert Salary column to numeric
     itjob_salary_df[column2] = pd.to_numeric(itjob_salary_df[column2], errors='coerce')
 
-    # Handle missing values
+# Handle missing values
     itjob_salary_df[column1].fillna('', inplace=True)
     itjob_salary_df[column2].fillna(0, inplace=True)
 
-    # Add number inputs for filtering salary range
+# Add number inputs for filtering salary range
     min_salary = itjob_salary_df[column2].min()
     max_salary = itjob_salary_df[column2].max()
     min_value = st.number_input('Min Salary', min_value=min_salary, max_value=max_salary, value=min_salary)
     max_value = st.number_input('Max Salary', min_value=min_salary, max_value=max_salary, value=max_salary)
 
-    # Filter the DataFrame based on the salary range
+# Filter the DataFrame based on the salary range
     filtered_df4 = itjob_salary_df[(itjob_salary_df[column2] >= min_value) & (itjob_salary_df[column2] <= max_value)]
 
-    # Update job titles based on the filtered DataFrame
+# Update job titles based on the filtered DataFrame
     job_titles = filtered_df4[column1].unique()
-    selected_job_titles = st.multiselect('Select Job Titles', job_titles, default=[])
 
-    # Further filter the DataFrame based on selected job titles
+# Allow users to select job titles, defaulting to all options if none are selected
+    selected_job_titles = st.multiselect('Select Job Titles', job_titles, default=job_titles)
+
+# Further filter the DataFrame based on selected job titles
     filtered_df4 = filtered_df4[filtered_df4[column1].isin(selected_job_titles)]
-    # Display the filtered data (optional)
-    st.write(filtered_df4)
 
-    # Ensure that the import of the chatbot module is correctly done
-    try:
-        from chatbot.commands.chatbot import chatbot
-    except ImportError as e:
-        st.error(f"Error importing the chatbot module: {e}")
+# Display the filtered dataframe
+    if filtered_df4.empty:
+        st.write("No jobs match your selected criteria.")
+    else:
+        st.write(filtered_df4)
+        # Assuming you have a function that initializes your skillset dataset
+        itjob_skillset_df = initialize_skillset_dataset()
 
-    itjob_skillset_df = initialize_skillset_dataset
+        st.title("Most Commonly Required IT Competencies in the Industry")
+        column = 'Sub-skill'
 
-    st.title("Most Commonly Required IT Competencies in the Industry")
-    column = 'Sub-skill' 
+        # Handle missing values
+        itjob_skillset_df[column].fillna('Unknown', inplace=True)
 
-    # Handle missing values
-    itjob_skillset_df[column].fillna('Unknown', inplace=True)
+        # Get unique sub-skills for the multiselect box
+        sub_skills = itjob_skillset_df[column].unique()
+        selected_sub_skills = st.multiselect('Select Sub-skills', sub_skills, default=[])
 
-    # Update sub-skills based on the DataFrame
-    sub_skills = filtered_df5[column].unique()
-    selected_sub_skills = st.multiselect('Select Sub-skills', sub_skills, default=[])
+        # Filter the DataFrame based on selected sub-skills
+        if selected_sub_skills:  # Check if any sub-skills are selected
+            filtered_df5 = itjob_skillset_df[itjob_skillset_df[column].isin(selected_sub_skills)]
+        else:
+            filtered_df5 = itjob_skillset_df  # If no sub-skills selected, show the full dataset
 
-    # Further filter the DataFrame based on selected sub-skills
-    filtered_df5 = filtered_df5[filtered_df5[column].isin(selected_sub_skills)]
+        # Optionally, display the filtered DataFrame
+        st.write(filtered_df5)
 
-
-    itjob_Certificate_df = initialize_certificate_dataset
+        itjob_Certificate_df = initialize_certificate_dataset
     
-    st.title("Distribution of Certificates in the Data File")
-    if 'certification_text' in itjob_Certificate_df.columns:
+        st.title("Distribution of Certificates in the Data File")
+        if 'certification_text' in itjob_Certificate_df.columns:
     # Count occurrences of each certificate
-        certificate_counts = itjob_Certificate_df['certification_text'].value_counts().sort_index()
+            certificate_counts = itjob_Certificate_df['certification_text'].value_counts().sort_index()
 
     # Display the top 3 most common certificates
         top3_certificates = certificate_counts.nlargest(3)
