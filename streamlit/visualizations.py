@@ -150,7 +150,7 @@ def visualizations():
                 # Display Analysis
                 st.title("💪 Distribution of Skills")
                 st.write("""
-                        ### Visual Description 📊
+                        # Visual Description 📊
                         **Top IT skills needed for company positions:**
                         - **Web Development (WebD)**, **Coding**, and **DevOps** are among the most in-demand technical skills.
                         - Soft skills like **communication**, **teamwork**, and **problem-solving** are crucial across industries.
@@ -190,11 +190,11 @@ def visualizations():
 
     # Combined analysis using st.write
     st.write("""
-            ## 📊 Visual Description
+            # 📊 Visual Description
             - The most popular entry-level IT job for tech freshers is **Data Analyst**, accounting for **76.1%** of applications.
             - The least popular positions include **Data Reporting Analyst**, **Data Quality Analyst**, and **BI Analyst**, each at **0.718%**.
 
-            ## 🔍 Analysis of Key Insights
+            # 🔍 Analysis of Key Insights
             - **Data Analyst**: Focuses on developing foundational skills in data manipulation, analysis, and reporting, helping businesses gain insights from data.
             - **Business Intelligence (BI) Analyst**: Gathers and manages data using SQL, ensures data quality through cleansing techniques, and applies analytics to identify trends.
             - **Research Analyst**: Collects data from various sources, uses statistical tools like Excel, R, or Python for analysis, and creates detailed reports summarizing findings.
@@ -225,12 +225,12 @@ def visualizations():
     st.title("🎓 Education for IT Jobs in Singapore")
     # Analysis
     st.write("""
-            ## 📊 Visual Description
+            # 📊 Visual Description
             - The most required education for IT jobs is a **Bachelor's Degree**, accounting for **65.7%** of roles.
             - **Diploma holders** also make up a significant portion, with **22%** of IT job positions.
             - **Certificates** contribute a minimal **0.0343%**, indicating a much lower acceptance rate for IT-related certifications.
 
-            ## 💡 Importance of Education in IT Jobs
+            # 💡 Importance of Education in IT Jobs
             - IT is a highly competitive field, and many companies **prefer candidates with Bachelor's Degrees**.
              - **Degree programs** provide a comprehensive skill set and foster critical thinking and problem-solving abilities, which are crucial in IT roles.
             - **Diplomas** focus on specific skills, but they may not cover the broad knowledge required for career advancement in many IT roles.
@@ -278,10 +278,10 @@ def visualizations():
         # Analysis
         st.title("🏢 Companies Hiring IT Roles")
         st.write("""
-                ## **Visual Description 📊**  
+                # **Visual Description 📊**  
                 The top 3 companies that are hiring the most IT roles are **Deloitte** (1,297 roles), **Accenture** (576 roles), and **Amazon Web Services, Inc** (551 roles) respectively.
 
-                ## **Company Background 💻**  
+                # **Company Background 💻**  
                 **Deloitte** is expanding its IT workforce to support emerging technologies like AI, cloud computing, and cybersecurity, which are in high demand globally. This hiring spree aligns with the firm's global strategy to meet the growing need for digital transformation solutions and enhanced cybersecurity services.
 
                 **Accenture** is actively hiring for IT roles due to its expansive focus on digital transformation, consulting, and technology-driven services across numerous industries. The company leverages cutting-edge technologies like AI, cloud computing, and automation to support its clients in navigating complex business challenges and driving innovation.
@@ -340,7 +340,7 @@ def visualizations():
         # Initialize filtered_df5
         filtered_df5 = indeed_df.copy()  # Start with a copy of the full dataset
 
-        title="IT Competencies in the Industry"
+        st.write("### **IT Competencies in the Industry**")
 
         # Get unique sub-skills for the multiselect box
         sub_skills = indeed_df[column].unique()
