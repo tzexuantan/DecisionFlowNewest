@@ -47,11 +47,11 @@ def initialize_companyengagement_dataset():
     companyengagement_df = pd.read_excel(file_path)
     return companyengagement_df
 
-def plot_bar_graph(data, x_col):
+def plot_bar_graph(data, x_col, y_col, title):
     plt.figure(figsize=(10, 5))
     plt.xlabel(x_col)
-    plt.ylabel('No. of People Hired for the Skill')
-    plt.title(f'Distribution of Skills in {x_col}')
+    plt.ylabel(y_col)
+    plt.title(title)
     
     data.plot(kind='bar', color='skyblue')
 
