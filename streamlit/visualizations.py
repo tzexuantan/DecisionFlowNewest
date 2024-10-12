@@ -18,7 +18,7 @@ def initialize_ITJobs_dataset():
     # Get the directory of the current script
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # Build the file path to Final.xlsx
-    file_path = os.path.join(current_dir, "../Pre-Processing/IT Jobs.xlsx")
+    file_path = os.path.join(current_dir, "../dataset/IT Jobs.xlsx")
     ITJobs_df = pd.read_excel(file_path)
     return ITJobs_df
 
@@ -26,7 +26,7 @@ def initialize_itjob_headerfinal_dataset():
     # Get the directory of the current script
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # Build the file path to Final.xlsx
-    file_path = os.path.join(current_dir, "../Pre-Processing/itjob_headerfinal.xlsx")
+    file_path = os.path.join(current_dir, "../dataset/itjob_headerfinal.xlsx")
     itjob_headerfinal_df = pd.read_excel(file_path)
     return itjob_headerfinal_df
 
