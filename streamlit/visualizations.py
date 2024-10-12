@@ -14,15 +14,6 @@ def initialize_indeed_dataset():
     indeed_df = pd.read_excel(indeed_data_file_path)
     return indeed_df
 
-def initialize_engagement_dataset():
-    #Obtain current directory file path
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    # File path to the dataset
-    company_engagement_file_path = os.path.join(current_dir, "company engagement.xlsx")
-    engagement_df = pd.read_excel(company_engagement_file_path)
-    
-    return engagement_df
-
 def initialize_ITJobs_dataset():
     # Get the directory of the current script
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -39,14 +30,6 @@ def initialize_itjob_headerfinal_dataset():
     itjob_headerfinal_df = pd.read_excel(file_path)
     return itjob_headerfinal_df
 
-def initialize_companyengagement_dataset():
-    # Get the directory of the current script
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    # Build the file path to Final.xlsx
-    file_path = os.path.join(current_dir, "../Pre-Processing/company engagement.xlsx")
-    companyengagement_df = pd.read_excel(file_path)
-    return companyengagement_df
-
 def plot_bar_graph(data, x_col, y_col, title):
     plt.figure(figsize=(10, 5))
     plt.xlabel(x_col)
@@ -55,24 +38,12 @@ def plot_bar_graph(data, x_col, y_col, title):
     
     data.plot(kind='bar', color='skyblue')
 
-def plot_pie_chart(data, column):
+def plot_pie_chart(size, label, title):
     plt.figure(figsize=(8,8))
-    plt.pie(values=column, names=data)
-    plt.title('IT Entry Level Jobs')
+    plt.pie(values=size, names=label)
+    plt.title(title)
     plt.axis('equal')
     plt.plot()
-
-def plot_pie_chart(data, column):
-    plt.figure(figsize=(8,8))
-    plt.pie(values=column, names=data)
-    plt.title('Education for IT Jobs')
-    plt.axis('equal')
-    plt.plot()
-
-import streamlit as st
-import pandas as pd
-import plotly.express as px
-import matplotlib.pyplot as plt
 
 def visualizations():
     # Initialize dataset
@@ -172,89 +143,4 @@ def visualisations():
 
     # Display pie chart 
     st.plotly_chart(fig)
-
-def visualisations():
-    #Initialize Dataset
-    companyengagement_df = initialize_companyengagement_dataset()
-
-    # Prepare data for radar chart
-    categories = list(companyengagement_df.columns)
-    values = companyengagement_df.mean().tolist()
-
-    # Print categories and values to check them
-    st.write("Categories:", categories)
-    st.write("Values:", values)
-
-    # Function to create radar chart
-    def create_radar_chart(categories, values):
-        fig = px.line_polar(r=values, theta=categories, line_close=True)
-        fig.update_traces(fill='toself')
-        return fig
-
-    # Function to update chart layout with title
-    def add_title(fig, title):
-        fig.update_layout(
-            title=title,
-            polar=dict(
-                radialaxis=dict(
-                    visible=True,
-                    range=[0, 5]
-                )
-            ),
-            showlegend=False
-        )
-        return fig
-
-    # Create radar chart
-    fig = create_radar_chart(categories, values)
-
-    # Add title to the chart
-    fig = add_title(fig, "Employer Branding Radar Chart")
-
-    # Display chart
-    st.plotly_chart(fig)
-
-
-# ================== Radar Chart Code ==================
-
-
-# # Load data for radar chart
-# if radar_file_path:
-#     df_radar = pd.read_excel(radar_file_path)
-
-# # Prepare data for radar chart
-# categories = list(df_radar.columns)
-# values = df_radar.mean().tolist()
-
-# # Function to create radar chart
-# def create_radar_chart(categories, values):
-#     fig = px.line_polar(r=values, theta=categories, line_close=True)
-#     fig.update_traces(fill='toself')
-#     return fig
-
-# # Function to update chart layout with title
-# def add_title(fig, title):
-#     fig.update_layout(
-#         title=title,
-#         polar=dict(
-#             radialaxis=dict(
-#                 visible=True,
-#                 range=[0, 5]
-#             )
-#         ),
-#         showlegend=False
-#     )
-#     return fig
-
-# # Create radar chart
-# fig = create_radar_chart(categories, values)
-
-# # Add title to the chart
-# fig = add_title(fig, "Company Engagement Radar Chart")
-
-# # Display chart
-# st.plotly_chart(fig)
-
-
-
 
