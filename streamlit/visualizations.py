@@ -105,24 +105,31 @@ def visualizations():
     # Initialize dataset
     indeed_df = initialize_indeed_dataset()
 
-    # Bar Graph
-    st.title("Distributions of Skills and Job Titles")
 
-    # Specify columns for skills and job titles
-    skill_column = "Skill"  # Set this to the column name for skills in your Excel file
-    job_title_column = "Job Title"  # Set this to the column name for job titles in your Excel file
+    # Bar Graph
+    st.title("Distributions of Skills")
+ 
+    #Column to plot
+    column_to_plot4 = "Skill"
+    skill_y_col = "No. of Position Require These Skills"
+    skill_x_col = "Skills"
+    job_title_column = "Job Title"
+
 
     # Check if columns exist
-    if skill_column not in indeed_df.columns:
-        st.error(f"Column '{skill_column}' not found in the Excel file.")
+    if column_to_plot4 not in indeed_df.columns:
+        st.error(f"Column '{column_to_plot4}' not found in the Excel file.")
         return
+
 
     if job_title_column not in indeed_df.columns:
         st.error(f"Column '{job_title_column}' not found in the Excel file.")
         return
 
+
     # Predefined keywords to filter job titles
     predefined_keywords = ["Scientist", "IT", "Analyst", "DevOps", "Developer", "Computer Science", "Technology"]
+
 
     # Multi-select for job title filtering
     selected_keywords = st.multiselect(
@@ -131,17 +138,21 @@ def visualizations():
         default=predefined_keywords  # Default to show all
     )
 
+
     # Create a regex pattern to include any job title containing the selected keywords
     pattern = '|'.join(selected_keywords)
+
 
     # Filter the DataFrame based on selected job titles
     filtered_df = indeed_df[
         (indeed_df[job_title_column].str.contains(pattern, case=False, na=False))
     ]
 
+
     # Count occurrences of each skill after filtering by job titles
-    if skill_column in filtered_df.columns and filtered_df[skill_column].dtype == 'object':
-        category_counts = filtered_df[skill_column].value_counts()
+    if column_to_plot4 in filtered_df.columns and filtered_df[column_to_plot4].dtype == 'object':
+        category_counts = filtered_df[column_to_plot4].value_counts()
+
 
         if not category_counts.empty:
             # Multi-select filter for sub-skills
@@ -151,18 +162,16 @@ def visualizations():
                 default=category_counts.index.tolist()  # Default to show all skills
             )
 
+
             # Create a filtered data series based on selected skills
             filtered_counts = category_counts[selected_skills]
 
+
             # Create a bar chart for the filtered sub-skills
             if not filtered_counts.empty:
-                plt.figure(figsize=(10, 6))
-                plt.bar(filtered_counts.index, filtered_counts.values, color='skyblue')
-                plt.xlabel('Skills')
-                plt.ylabel('No. of Position Require These Skills')
-                plt.title(f'Distribution of Skills')
-                plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
-                st.pyplot(plt)
+                # Create a bar chart
+                st.bar_chart(filtered_counts)
+           
             else:
                 st.warning("No data available for the selected skills.")
         else:
