@@ -99,7 +99,7 @@ def visualizations():
     indeed_df = initialize_indeed_dataset()
 
     # Title of the app
-    st.title("Distributions of Skills")
+    st.title("Distribution of Skills")
 
     # Column to plot
     column_to_plot4 = "Skill"
@@ -177,7 +177,7 @@ def visualizations():
 
     #Initialize Dataset
     ITJobs_df = initialize_ITJobs_dataset()
-
+ 
     category_column = 'job_title' 
     sizes = ITJobs_df[category_column].value_counts()  # Counts the occurrences of each category
     job = sizes.index  # The unique category 
@@ -186,9 +186,8 @@ def visualizations():
     # Create the pie chart
     fig = px.pie(values=sizes, names=job, title="IT Entry Level Jobs")
 
-    st.title("📈 Entry Level IT Jobs") 
-
     # Combined analysis using st.write
+    st.title("📈Entry Level")
     st.write("""
             # 📊 Visual Description
             - The most popular entry-level IT job for tech freshers is **Data Analyst**, accounting for **76.1%** of applications.
@@ -222,8 +221,8 @@ def visualizations():
     # Create the pie chart
     fig = px.pie(values=sizes, names=labels, title="Education for IT Jobs")
 
-    st.title("🎓 Education for IT Jobs in Singapore")
     # Analysis
+    st.title("🎓Education for IT Jobs in Singapore")
     st.write("""
             # 📊 Visual Description
             - The most required education for IT jobs is a **Bachelor's Degree**, accounting for **65.7%** of roles.
@@ -245,10 +244,15 @@ def visualizations():
     # Initialize the dataset
     indeed_df = initialize_indeed_dataset()
 
+    st.title("🏢 Companies Hiring IT Roles")
     # Column to plot
     column_to_plot3 = "Company/Candidate Name"
     company_x_col = "Company"
     company_y_col = "No. of roles"
+
+    sizes = indeed_df[column_to_plot3].value_counts()  # Counts the occurrences of each category
+    labels = sizes.index  # The unique category labels
+    sizes = sizes.values  # The corresponding sizes
 
     if indeed_df[column_to_plot3].dtype == 'object':
         # Count occurrences of each category
@@ -269,14 +273,7 @@ def visualizations():
                 default=[]# Default to show none
             )
 
-            # Filter the data based on selected companies
-            if selected_companies:
-                filtered_data = indeed_df[indeed_df[column_to_plot3].isin(selected_companies)]
-                filtered_counts = filtered_data[column_to_plot3].value_counts().reset_index()
-                filtered_counts.columns = [company_x_col, company_y_col]  # Ensure the columns match correctly
-
         # Analysis
-        st.title("🏢 Companies Hiring IT Roles")
         st.write("""
                 # **Visual Description 📊**  
                 The top 3 companies that are hiring the most IT roles are **Deloitte** (1,297 roles), **Accenture** (576 roles), and **Amazon Web Services, Inc** (551 roles) respectively.
@@ -291,104 +288,133 @@ def visualizations():
                 These companies offer innovative environments that encourage personal growth, skill development, and the opportunity to make a real impact in the fast-evolving digital landscape. Don’t hold back—take that step forward and build the career you’ve always dreamed of! 💭
                 """)
 
-        # Plot the bar graph for selected companies
-        plot_bar_graph(filtered_counts, company_x_col, company_y_col, 'Companies that are hiring the IT roles')
+        # Filter the data based on selected companies
+        if selected_companies:
+            filtered_data = indeed_df[indeed_df[column_to_plot3].isin(selected_companies)]
+            filtered_counts = filtered_data[column_to_plot3].value_counts().reset_index()
+            filtered_counts.columns = [company_x_col, company_y_col]
 
-        itjob_salary_df = initialize_salary_dataset()
+            # Plot the bar graph for selected companies
+            plot_bar_graph(filtered_counts, company_x_col, company_y_col, 'Companies that are hiring the IT roles')
 
-        column1 = 'Job Title'
-        column2 = 'Salary'
+    itjob_salary_df = initialize_salary_dataset()
+    st.title("💵Salary ranges for IT jobs")
 
-        itjob_salary_df[column2] = pd.to_numeric(itjob_salary_df[column2], errors='coerce')
+    column1 = 'Job Title'
+    column2 = 'Salary'
 
-        # Handle missing values
-        itjob_salary_df[column1] = itjob_salary_df[column1].fillna('')
-        itjob_salary_df[column2] = itjob_salary_df[column2].fillna(0)
+    itjob_salary_df[column2] = pd.to_numeric(itjob_salary_df[column2], errors='coerce')
 
-        # Add number inputs for filtering salary range
-        min_salary = itjob_salary_df[column2].min()
-        max_salary = itjob_salary_df[column2].max()
-        min_value = st.number_input('Min Salary', min_value=min_salary, max_value=max_salary, value=min_salary)
-        max_value = st.number_input('Max Salary', min_value=min_salary, max_value=max_salary, value=max_salary)
+    # Handle missing values
+    itjob_salary_df[column1] = itjob_salary_df[column1].fillna('')
+    itjob_salary_df[column2] = itjob_salary_df[column2].fillna(0)
 
-        # Filter the DataFrame based on the salary range
-        filtered_df4 = itjob_salary_df[(itjob_salary_df[column2] >= min_value) & (itjob_salary_df[column2] <= max_value)]
+    # Add number inputs for filtering salary range
+    min_salary = itjob_salary_df[column2].min()
+    max_salary = itjob_salary_df[column2].max()
+    min_value = st.number_input('Min Salary', min_value=min_salary, max_value=max_salary, value=min_salary)
+    max_value = st.number_input('Max Salary', min_value=min_salary, max_value=max_salary, value=max_salary)
 
-        # Update job titles based on the filtered DataFrame
-        job_titles = filtered_df4[column1].unique()
+    # Filter the DataFrame based on the salary range
+    filtered_df4 = itjob_salary_df[(itjob_salary_df[column2] >= min_value) & (itjob_salary_df[column2] <= max_value)]
 
-        st.write("""
-                **Let's look into the salary range of different IT Jobs! Select the job you are interested in 🎀**
+    # Update job titles based on the filtered DataFrame
+    job_titles = filtered_df4[column1].unique()
 
-                Explore the different jobs and make your decision wisely! Ps. You can explore other jobs too
-                """)
-        
-        # Allow users to select job titles, defaulting to all options if none are selected
-        selected_job_titles = st.multiselect('Select Job Titles', job_titles, default=[])
-        # Display the filtered dataframe
+    st.write("""
+            **Let's look into the salary range of different IT Jobs! Select the job you are interested in 🎀**
+
+            Explore the different jobs and make your decision wisely! Ps. You can explore other jobs too
+            """)
+    
+    # Allow users to select job titles, defaulting to all options if none are selected
+    selected_job_titles = st.multiselect('Select Job Titles', job_titles, default=[])
+    # Display the filtered dataframe
+    if selected_job_titles:
         filtered_df4 = filtered_df4[filtered_df4[column1].isin(selected_job_titles)]
         plot_horizontal_graph(filtered_df4, column1, column2, 'Salary ranges for IT jobs')
 
-        # Initialize the dataset
-        indeed_df = initialize_indeed_dataset()
+    # Initialize the dataset
+    indeed_df = initialize_indeed_dataset()
+    column = 'Sub-skill'
 
-        column = 'Sub-skill'
+    # Handle missing values
+    indeed_df[column].fillna('Unknown', inplace=True)
 
-        # Handle missing values
-        indeed_df[column].fillna('Unknown')
+    # Initialize filtered_df5
+    filtered_df5 = indeed_df.copy()  # Start with a copy of the full dataset
 
-        # Initialize filtered_df5
-        filtered_df5 = indeed_df.copy()  # Start with a copy of the full dataset
+    st.write("### **IT Competencies in the Industry**")
 
-        st.write("### **IT Competencies in the Industry**")
+    # Get unique sub-skills for the multiselect box
+    sub_skills = indeed_df[column].unique()
+    selected_sub_skills = st.multiselect('Select Sub-skills', sub_skills, default=[])
+    st.write("""
+    ### Visual Description 📊
+    The top 3 most commonly required IT competencies are Excel - 6322 people, PowerPoint - 2600 people and Flexible - 2162 people.
 
-        # Get unique sub-skills for the multiselect box
-        sub_skills = indeed_df[column].unique()
-        selected_sub_skills = st.multiselect('Select Sub-skills', sub_skills, default=[])
+    ### Insights 💡
+    **Excel Skills Lead the Demand:** With 57.04% of positions requiring Excel, it is clear that proficiency in data management, analysis, and reporting is highly valued in the IT industry. This could reflect the need for data-driven decision-making and managing large datasets.
 
-        # Filter the DataFrame based on selected sub-skills
-        if selected_sub_skills:  # Check if any sub-skills are selected
-            filtered_df5 = filtered_df5[filtered_df5[column].isin(selected_sub_skills)]
-            plot_histogram(filtered_df5, column, selected_sub_skills, 'IT Competencies in the Industry')
+    **PowerPoint as a Communication Tool:** PowerPoint skills are required in 23.45% of the positions, indicating the importance of presenting information effectively. This might be related to roles that require creating presentations, reports, and visualizations for stakeholders.
 
-        # Initialize the dataset
-        itjob_Certificate_df = initialize_certificate_dataset()
+    **Flexibility in Work Style:** Around 19.51% of the positions emphasize flexibility, which could suggest a demand for adaptability in work environments or roles that require shifting between different projects or tools.
 
-        st.title("Distribution of Certificates in Singapore")
-        if 'certification_text' in itjob_Certificate_df.columns:
-        # Count occurrences of each certificate
-            certificate_counts = itjob_Certificate_df['certification_text'].value_counts().sort_index()
+    ### Recommendations 🔍
+    **Prioritize Excel Proficiency:**
+    Since over 57% of the positions require Excel skills, it is crucial for candidates to master this tool. This includes functions like data analysis, pivot tables, charts, and macros. Investing in advanced Excel training can give a competitive edge and may open doors to a wider range of roles, especially those involving data-heavy tasks or financial analysis.
 
-        # Multi-select to filter certificates
-        selected_certificates = st.multiselect(
-        'Select certificates to visualize',
-        options=certificate_counts.index.tolist(),  # Provide the list of options
-        default=[]  # Default to show none
-    )
+    **Develop Effective Presentation Skills:**
+    With PowerPoint required for 23.45% of positions, being able to create clear, visually appealing presentations is important. This skill is valuable not only for communication but also for pitching ideas, reporting results, and training others. Candidates should focus on learning how to design slides that are concise, engaging, and easy to understand, possibly incorporating data visualizations and storytelling techniques.
 
-        # Section for IT Certificates
-        st.title("📜 IT Certificates")
+    **Embrace a Flexible Work Approach:**
+    Flexibility, desired in 19.51% of the positions, suggests that employers value adaptability. Being able to shift between tasks, learn new tools quickly, and adjust to different work environments can be a major asset. For candidates, developing a growth mindset and learning agile or adaptable work methodologies could be beneficial in meeting the demands of dynamic work environments.
 
-        # Combined Certificates Description and Purpose
-        st.write("""
-                ## **Visual Description 📊**  
-                The top 3 certificates in the IT industry are **Cisco (CCNA/CCNP/CCIE)** - 263 People, **Project Management Professional (PMP)** - 155 People and **Information Technology Infrastructure Library (ITIL)** - 153 People
+    By sharpening your Excel expertise, mastering the art of presenting ideas through PowerPoint, and being open to change, you’re not just meeting industry needs—you’re setting yourself up for success. Remember, every skill you acquire is an investment in your future. Keep learning, stay adaptable, and the right opportunity will come your way! 🚀
+    """)
+    # Filter the DataFrame based on selected sub-skills
+    if selected_sub_skills:  # Check if any sub-skills are selected
+        filtered_df5 = filtered_df5[filtered_df5[column].isin(selected_sub_skills)]
+        plot_histogram(filtered_df5, column, selected_sub_skills, 'IT Competencies in the Industry')
 
-                ## **Purpose 📎**  
-                - **Cisco (CCNA/CCNP/CCIE)**: These are essential credentials for IT professionals aiming to advance their careers in networking and IT infrastructure. Employers greatly value these certificates as they demonstrate a thorough proficiency in network fundamentals, security protocols, and sophisticated troubleshooting procedures.
-  
-                - **PMP (Project Management Professional)**: This certification denotes the knowledge and expertise needed to handle projects successfully. Acquiring the PMP certification can boost prospects for professional growth, as numerous establishments value this qualification and frequently require it for project management positions.
-  
-                - **ITIL (Information Technology Infrastructure Library)**: ITIL is a widely used framework for IT service management (ITSM) that offers best practices to assist businesses in planning, implementing, and enhancing their IT services. It is structured around a lifecycle that includes service strategy, design, transition, operation, and continual improvement.
+    # Initialize the dataset
+    itjob_Certificate_df = initialize_certificate_dataset()
 
-                - Overall, these IT Certifications deepen your knowledge and demonstrate your commitment to excellence in your field. They will help enhance employability and boost earning potential.
+    st.title("Distribution of Certificates in Singapore")
+    if 'certification_text' in itjob_Certificate_df.columns:
+    # Count occurrences of each certificate
+        certificate_counts = itjob_Certificate_df['certification_text'].value_counts().sort_index()
 
-                **Upgrade yourself** and position yourself as a leader in your industry, ready to tackle complex challenges and drive innovation. Don’t just wait for opportunities—create them! 🌈
-                """)
+    # Multi-select to filter certificates
+    selected_certificates = st.multiselect(
+    'Select certificates to visualize',
+    options=certificate_counts.index.tolist(),  # Provide the list of options
+    default=[]  # Default to show none
+)
 
-        
-        # Filter the data based on selected certificates
-        filtered_counts = certificate_counts[selected_certificates]
-        if selected_certificates:
-            filtered_counts6 = certificate_counts[selected_certificates]
-            plot_line_chart(filtered_counts6, 'Distribution of Certificates in the Data File')
+    # Section for IT Certificates
+    st.title("📜 IT Certificates")
+
+    # Combined Certificates Description and Purpose
+    st.write("""
+            ## **Visual Description 📊**  
+            The top 3 certificates in the IT industry are **Cisco (CCNA/CCNP/CCIE)** - 263 People, **Project Management Professional (PMP)** - 155 People and **Information Technology Infrastructure Library (ITIL)** - 153 People
+
+            ## **Purpose 📎**  
+            - **Cisco (CCNA/CCNP/CCIE)**: These are essential credentials for IT professionals aiming to advance their careers in networking and IT infrastructure. Employers greatly value these certificates as they demonstrate a thorough proficiency in network fundamentals, security protocols, and sophisticated troubleshooting procedures.
+
+            - **PMP (Project Management Professional)**: This certification denotes the knowledge and expertise needed to handle projects successfully. Acquiring the PMP certification can boost prospects for professional growth, as numerous establishments value this qualification and frequently require it for project management positions.
+
+            - **ITIL (Information Technology Infrastructure Library)**: ITIL is a widely used framework for IT service management (ITSM) that offers best practices to assist businesses in planning, implementing, and enhancing their IT services. It is structured around a lifecycle that includes service strategy, design, transition, operation, and continual improvement.
+
+            - Overall, these IT Certifications deepen your knowledge and demonstrate your commitment to excellence in your field. They will help enhance employability and boost earning potential.
+
+            **Upgrade yourself** and position yourself as a leader in your industry, ready to tackle complex challenges and drive innovation. Don’t just wait for opportunities—create them! 🌈
+            """)
+
+    
+    # Filter the data based on selected certificates
+    filtered_counts = certificate_counts[selected_certificates]
+    if selected_certificates:
+        filtered_counts6 = certificate_counts[selected_certificates]
+        plot_line_chart(filtered_counts6, 'Distribution of Certificates in Singapore')
