@@ -9,7 +9,7 @@ import plotly.express as px
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Build the file path to Final.xlsx
-file_path = os.path.join(current_dir, "../Pre-Processing/IT Jobs.xlsx")
+file_path = os.path.join(current_dir, "../dataset/IT Jobs.xlsx")
 
 #Read the excel file
 df = pd.read_excel(file_path)
