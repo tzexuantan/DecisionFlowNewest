@@ -1,47 +1,41 @@
 import streamlit as st
 import pandas as pd
+import os
 import matplotlib.pyplot as plt
 
 # Title of the app
-st.title("Distribution of Certificates in the Data File")
+st.title("Distribution of Certificates in Singapore")
 
-# Fixed file path
-file_path = r"D:\SCHOOL\UNI\Year 1\Trimester 1\INF1102 - Programming Fundamentals\Project\Data sets\merged.csv"
+# Get the directory of the current script
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Check if the file exists
-import os
-if not os.path.isfile(file_path):
-    st.error(f"File not found: {file_path}")
-else:
-    # Read the CSV file with the correct encoding
-    df = pd.read_csv(file_path, encoding='ISO-8859-1', on_bad_lines='skip')
+# Build the file path to Final.xlsx
+file_path = os.path.join(current_dir, "../dataset/Certificate.xlsx")
 
-    # Check if 'certification_text' column exists
-    if 'certification_text' in df.columns:
-        # Count occurrences of each certificate
-        certificate_counts = df['certification_text'].value_counts().sort_index()
+# Read the excel file
+df = pd.read_excel(file_path)
 
-        # Multi-select to filter certificates
-        selected_certificates = st.multiselect(
-            'Select certificates to visualize',
-            options=certificate_counts.index.tolist(),  # Provide the list of options
-            default=[]  # Default to show none
-        )
+if 'certification_text' in df.columns:
+    # Count occurrences of each certificate
+    certificate_counts = df['certification_text'].value_counts().sort_index()
 
-        # Filter the data based on selected certificates
-        filtered_counts = certificate_counts[selected_certificates]
+    # Multi-select to filter certificates
+    selected_certificates = st.multiselect(
+        'Select certificates to visualize',
+        options=certificate_counts.index.tolist(),  # Provide the list of options
+        default=[]  # Default to show none
+    )
 
-        # Generate a plot for distribution
-        plt.figure(figsize=(10, 5))
-        plt.step(filtered_counts.index, filtered_counts.values, where='mid', color='b', linestyle='-', linewidth=2, marker='o')
-        plt.title('Distribution of Certificates')
-        plt.xlabel('Certificate')
-        plt.ylabel('No. of people with the certificate')
-        plt.xticks(rotation=90)  # Rotate x-axis labels for better readability
-        plt.grid(True)
+    # Filter the data based on selected certificates
+    if selected_certificates:
+        filtered_counts6 = certificate_counts[selected_certificates]
 
-        # Adjust layout to ensure everything fits without overlap
-        plt.tight_layout()
-
-        # Display the step line chart
-        st.pyplot(plt)
+        if st.button('Generate Line Chart'):
+            plt.figure(figsize=(10, 5))
+            plt.plot(filtered_counts6.index, filtered_counts6.values, marker='o', linestyle='-', color='b')
+            plt.title('Distribution of Certificates in Singapore')
+            plt.xlabel('Certificate')
+            plt.ylabel('No. of people with the certificate')
+            plt.xticks(rotation=90)
+            plt.grid(True)
+            st.pyplot(plt)

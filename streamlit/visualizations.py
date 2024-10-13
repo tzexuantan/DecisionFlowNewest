@@ -258,12 +258,6 @@ def visualizations():
         # Count occurrences of each category
         category_counts3 = indeed_df[column_to_plot3].value_counts()
 
-        # Display the company with the highest and lowest number of roles
-        highest_company = category_counts3.idxmax()
-        highest_count = category_counts3.max()
-        lowest_company = category_counts3.idxmin()
-        lowest_count = category_counts3.min()
-
         # Check if category_counts is not empty
         if not category_counts3.empty:
             # Multi-select to choose specific data
